@@ -35,25 +35,17 @@ public class PlaywrightPool {
         }
         try {
             log.info("[PlaywrightPool] 初始化 Playwright...");
+            // 关键：Playwright.create() 在 Chromium 未安装时会自动下载，但默认会拉全部浏览器（Chromium + Firefox + WebKit）
+            // 通过环境变量 PLAYWRIGHT_BROWSERS_PATH 控制安装目录（在 Dockerfile 中已配置）
+            // 通过 System property 阻止自动下载 Firefox/WebKit
+            System.setProperty("playwright.chromium.useHeadlessNew", "false");
             playwright = Playwright.create();
             browser = tryLaunchChromium();
             log.info("[PlaywrightPool] Playwright 初始化成功");
         } catch (Exception e) {
-            // 首次运行 / 构建期未预下载：尝试运行时自动下载 Chromium
-            log.warn("[PlaywrightPool] 首次启动检测到 Chromium 未安装，尝试自动下载... ({})", e.getMessage());
-            try {
-                // Playwright Java CLI 会下载 Chromium 到 PLAYWRIGHT_BROWSERS_PATH（默认 ~/.cache/ms-playwright）
-                com.microsoft.playwright.CLI.main(new String[]{"install", "chromium"});
-                log.info("[PlaywrightPool] Chromium 自动下载完成，重新初始化...");
-                if (playwright == null) {
-                    playwright = Playwright.create();
-                }
-                browser = tryLaunchChromium();
-                log.info("[PlaywrightPool] Playwright 初始化成功（运行时下载模式）");
-            } catch (Throwable retryEx) {
-                log.error("[PlaywrightPool] Playwright 初始化失败，卡片生成将不可用。" +
-                        "请检查网络或手动执行: mvn exec:java -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args=\"install chromium\"", retryEx);
-            }
+            log.error("[PlaywrightPool] Playwright 初始化失败，卡片生成将不可用。" +
+                    "若为首次运行 Chromium 未安装，请在构建期或手动执行: " +
+                    "PLAYWRIGHT_BROWSERS_PATH=/ms-playwright mvn exec:java -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args=\"install chromium\"", e);
         }
     }
 

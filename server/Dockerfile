@@ -22,15 +22,14 @@ COPY src ./src
 RUN mvn clean package -DskipTests -B --no-transfer-progress
 
 # 预下载 Chromium 到指定目录（后续复制到运行时镜像）
-# 这样运行时容器启动就不用再下载，冷启动更快
-# 注意：即便下载失败也要保证目录存在，否则运行时 COPY --from=builder 会报错
+# 这样运行时启动时 Playwright 检测到 /ms-playwright 已有 Chromium，就不会重新下载
+# 关键：用 mvn dependency:copy-dependencies 拿到 playwright jar，再用 java 直接跑 CLI 类
+# 这样能精准控制只下载 chromium，避免 Playwright.create() 默认下载全部浏览器
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN mkdir -p /ms-playwright && \
-    (mvn -B --no-transfer-progress exec:java \
-        -Dexec.mainClass=com.microsoft.playwright.CLI \
-        -Dexec.args="install chromium" \
-        -Dexec.classpathScope=runtime \
-     || echo "⚠️ 预下载失败，将在运行时首次调用时自动下载")
+    mvn -B --no-transfer-progress dependency:build-classpath -Dmdep.outputFile=/tmp/cp.txt -Dmdep.includeScope=runtime && \
+    (java -cp "$(cat /tmp/cp.txt)" com.microsoft.playwright.CLI install chromium \
+     || echo "⚠️ 预下载失败，运行时可能自动补下（含多余浏览器）")
 
 # ---------- 阶段二：运行时（轻量 JRE + Chromium） ----------
 FROM eclipse-temurin:17-jre-jammy
