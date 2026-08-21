@@ -23,12 +23,14 @@ RUN mvn clean package -DskipTests -B --no-transfer-progress
 
 # 预下载 Chromium 到指定目录（后续复制到运行时镜像）
 # 这样运行时容器启动就不用再下载，冷启动更快
+# 注意：即便下载失败也要保证目录存在，否则运行时 COPY --from=builder 会报错
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-RUN mvn -B --no-transfer-progress exec:java \
+RUN mkdir -p /ms-playwright && \
+    (mvn -B --no-transfer-progress exec:java \
         -Dexec.mainClass=com.microsoft.playwright.CLI \
         -Dexec.args="install chromium" \
         -Dexec.classpathScope=runtime \
-    || echo "⚠️ 预下载失败，将在运行时首次调用时下载"
+     || echo "⚠️ 预下载失败，将在运行时首次调用时自动下载")
 
 # ---------- 阶段二：运行时（轻量 JRE + Chromium） ----------
 FROM eclipse-temurin:17-jre-jammy
@@ -60,8 +62,14 @@ COPY --from=builder /ms-playwright /ms-playwright
 # 拷贝可执行 jar
 COPY --from=builder /build/target/maxingleme-server.jar app.jar
 
-# JVM 参数（云托管建议 512M-1G）
-ENV JAVA_OPTS="-Xms256m -Xmx768m -XX:+UseG1GC -Dfile.encoding=UTF-8"
+# JVM 参数（适配云托管 1核2G 容器规格）
+# -Xms512m           初始堆 512M，避免频繁扩容
+# -Xmx1024m          最大堆 1G，为 Chromium(~250M) 和系统留 ~750M 余量
+# -XX:+UseG1GC       G1 垃圾回收器，低延迟，适合响应式服务
+# -XX:MaxGCPauseMillis=200  目标 GC 停顿不超过 200ms
+# -XX:+HeapDumpOnOutOfMemoryError  OOM 时自动 dump，便于排查
+# -XX:HeapDumpPath=/data/logs      dump 文件落到日志目录
+ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/logs -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai"
 ENV SPRING_PROFILES_ACTIVE=prod
 
 # 创建卡片输出目录

@@ -36,18 +36,38 @@ public class PlaywrightPool {
         try {
             log.info("[PlaywrightPool] 初始化 Playwright...");
             playwright = Playwright.create();
-            browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
-                    .setHeadless(true)
-                    .setArgs(java.util.List.of(
-                            "--no-sandbox",
-                            "--disable-dev-shm-usage",
-                            "--disable-gpu"
-                    )));
+            browser = tryLaunchChromium();
             log.info("[PlaywrightPool] Playwright 初始化成功");
         } catch (Exception e) {
-            log.error("[PlaywrightPool] Playwright 初始化失败，卡片生成将不可用。" +
-                    "首次运行请执行: mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args=\"install chromium\"", e);
+            // 首次运行 / 构建期未预下载：尝试运行时自动下载 Chromium
+            log.warn("[PlaywrightPool] 首次启动检测到 Chromium 未安装，尝试自动下载... ({})", e.getMessage());
+            try {
+                // Playwright Java CLI 会下载 Chromium 到 PLAYWRIGHT_BROWSERS_PATH（默认 ~/.cache/ms-playwright）
+                com.microsoft.playwright.CLI.main(new String[]{"install", "chromium"});
+                log.info("[PlaywrightPool] Chromium 自动下载完成，重新初始化...");
+                if (playwright == null) {
+                    playwright = Playwright.create();
+                }
+                browser = tryLaunchChromium();
+                log.info("[PlaywrightPool] Playwright 初始化成功（运行时下载模式）");
+            } catch (Throwable retryEx) {
+                log.error("[PlaywrightPool] Playwright 初始化失败，卡片生成将不可用。" +
+                        "请检查网络或手动执行: mvn exec:java -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args=\"install chromium\"", retryEx);
+            }
         }
+    }
+
+    /**
+     * 启动 Chromium 浏览器
+     */
+    private Browser tryLaunchChromium() {
+        return playwright.chromium().launch(new BrowserType.LaunchOptions()
+                .setHeadless(true)
+                .setArgs(java.util.List.of(
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu"
+                )));
     }
 
     /**
