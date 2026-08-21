@@ -163,6 +163,14 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <!-- exec-maven-plugin：用于在构建期执行 Playwright CLI 预下载 Chromium -->
+            <!-- Dockerfile 中通过 mvn exec:java 调用 com.microsoft.playwright.CLI install chromium -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
         </plugins>
     </build>
 
