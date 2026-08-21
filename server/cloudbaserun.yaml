@@ -1,0 +1,39 @@
+# 微信云托管配置
+# 参考：https://cloud.weixin.qq.com/cloudrun/doc
+
+# 服务名（部署时可修改）
+containerPort: 8080
+
+# 初始化副本数
+initialReplicas: 1
+
+# 最小 / 最大副本数
+minReplicas: 1
+maxReplicas: 5
+
+# 单实例资源配置（Playwright + Java 需要一定资源）
+cpu: 1
+mem: 1
+
+# 触发扩缩容的 CPU 使用率阈值
+cpuThreshold: 70
+
+# 健康检查
+healthCheck:
+  path: /actuator/health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 30
+
+# 环境变量（部署时到云托管控制台配置真实值）
+envParams:
+  SPRING_PROFILES_ACTIVE: prod
+  # DEEPSEEK_API_KEY: sk-xxx           # 【部署时填入真实 Key】
+  # HUNYUAN_API_KEY: sk-xxx            # 【部署时填入真实 Key】
+  # WX_APPID: wx-xxx                   # 【部署时填入】
+  # WX_SECRET: xxx                     # 【部署时填入】
+  # ADMIN_TOKEN: your-strong-token     # 【部署时填入】
+  # MYSQL_HOST: xxx
+  # MYSQL_USER: xxx
+  # MYSQL_PASSWORD: xxx
+  # MYSQL_DB: mxlm

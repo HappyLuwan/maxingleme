@@ -1,0 +1,204 @@
+/* pages/index/index.wxss */
+
+.page {
+  min-height: 100vh;
+  padding: 40rpx 40rpx calc(60rpx + env(safe-area-inset-bottom));
+  background: 
+    radial-gradient(ellipse at top left, rgba(255, 71, 87, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(255, 140, 58, 0.1) 0%, transparent 50%),
+    #0a0a0a;
+  box-sizing: border-box;
+}
+
+/* ==== 顶部品牌区 ==== */
+.header {
+  padding: 40rpx 0 60rpx;
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.logo-fire {
+  font-size: 56rpx;
+}
+
+.logo-text {
+  font-size: 56rpx;
+  font-weight: 900;
+  letter-spacing: 8rpx;
+  background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.slogan {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 2rpx;
+}
+
+/* ==== 输入区 ==== */
+.input-wrap {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 40rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.06);
+}
+
+.input-label {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+.dot {
+  width: 8rpx;
+  height: 28rpx;
+  background: linear-gradient(180deg, #ff4757, #ff8c3a);
+  border-radius: 4rpx;
+  display: inline-block;
+}
+
+.input-area {
+  width: 100%;
+  min-height: 200rpx;
+  font-size: 32rpx;
+  color: #fff;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.input-placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.input-footer {
+  text-align: right;
+  font-size: 22rpx;
+  margin-top: 12rpx;
+}
+
+.text-hint {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ==== 风格选择 ==== */
+.style-wrap {
+  margin-bottom: 50rpx;
+}
+
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.style-item {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 20rpx;
+  padding: 28rpx 16rpx;
+  text-align: center;
+  border: 2rpx solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.style-item.active {
+  background: rgba(255, 71, 87, 0.12);
+  border-color: #ff4757;
+  box-shadow: 0 8rpx 24rpx rgba(255, 71, 87, 0.2);
+}
+
+.style-item.disabled {
+  opacity: 0.4;
+}
+
+.style-emoji {
+  font-size: 48rpx;
+  margin-bottom: 12rpx;
+}
+
+.style-name {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6rpx;
+}
+
+.style-desc {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.4;
+}
+
+.soon-tag {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  font-size: 18rpx;
+  padding: 2rpx 10rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 100rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ==== 骂醒按钮 ==== */
+.action-wrap {
+  margin-bottom: 60rpx;
+}
+
+.action-btn {
+  width: 100%;
+  height: 100rpx;
+  line-height: 100rpx;
+  font-size: 34rpx;
+  border-radius: 100rpx;
+  font-weight: 900;
+  letter-spacing: 4rpx;
+  background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 12rpx 32rpx rgba(255, 71, 87, 0.4);
+}
+
+.tip {
+  text-align: center;
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ==== 示例 ==== */
+.examples {
+  padding-top: 40rpx;
+  border-top: 1rpx dashed rgba(255, 255, 255, 0.1);
+}
+
+.examples-title {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 20rpx;
+}
+
+.example-item {
+  padding: 20rpx 24rpx;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.5;
+  border: 1rpx solid rgba(255, 255, 255, 0.05);
+}

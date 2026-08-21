@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 聊天卡片</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 750px;
+            height: 1000px;
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: #ededed;
+        }
+
+        .card {
+            width: 750px;
+            height: 1000px;
+            background: #ededed;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 顶部微信风格导航栏 */
+        .nav {
+            height: 90px;
+            background: #f7f7f7;
+            border-bottom: 1px solid #d8d8d8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: relative;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 28px;
+            color: #222;
+        }
+
+        .nav-back {
+            font-size: 36px;
+            color: #222;
+            font-weight: 300;
+        }
+
+        .nav-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            font-weight: 500;
+            color: #000;
+        }
+
+        .nav-right {
+            font-size: 40px;
+            color: #222;
+            letter-spacing: 3px;
+        }
+
+        /* 消息区 */
+        .messages {
+            flex: 1;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* 时间戳 */
+        .time-stamp {
+            text-align: center;
+            font-size: 22px;
+            color: #999;
+            padding: 6px 16px;
+            align-self: center;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+        }
+
+        /* 消息行 */
+        .msg-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .msg-row.right {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 76px;
+            height: 76px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .avatar.ai {
+            background: linear-gradient(135deg, #ff6b3d 0%, #ff4757 100%);
+        }
+
+        .avatar.user {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        }
+
+        .bubble-wrap {
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .msg-row.right .bubble-wrap {
+            align-items: flex-end;
+        }
+
+        .name {
+            font-size: 22px;
+            color: #888;
+            margin-bottom: 6px;
+            padding: 0 4px;
+        }
+
+        .bubble {
+            padding: 22px 26px;
+            border-radius: 14px;
+            font-size: 30px;
+            line-height: 1.55;
+            color: #222;
+            position: relative;
+            word-break: break-word;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .bubble.ai {
+            background: #ffffff;
+            border-top-left-radius: 4px;
+        }
+
+        .bubble.ai::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 12px 8px 0;
+            border-color: transparent #ffffff transparent transparent;
+        }
+
+        .bubble.user {
+            background: #95ec69;
+            border-top-right-radius: 4px;
+        }
+
+        .bubble.user::before {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 0 8px 12px;
+            border-color: transparent transparent transparent #95ec69;
+        }
+
+        /* 长消息自动缩小 */
+        .bubble.long { font-size: 26px; }
+        .bubble.longer { font-size: 22px; }
+
+        /* 底部分享区 */
+        .footer {
+            padding: 20px 30px 30px;
+            background: linear-gradient(180deg, #ededed 0%, #ffffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .brand-name {
+            font-size: 32px;
+            font-weight: 900;
+            color: #ff4757;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-slogan {
+            font-size: 20px;
+            color: #999;
+        }
+
+        .qrcode {
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .qrcode-placeholder {
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(90deg, #000 0 5px, transparent 5px 10px),
+                repeating-linear-gradient(0deg, #000 0 5px, transparent 5px 10px);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <!-- 顶部导航栏 -->
+    <div class="nav">
+        <div class="nav-left">
+            <span class="nav-back">‹</span>
+            <span>19</span>
+        </div>
+        <div class="nav-title">骂醒了么 AI</div>
+        <div class="nav-right">···</div>
+    </div>
+
+    <!-- 消息区 -->
+    <div class="messages">
+        <div class="time-stamp" th:text="${dateStr}">今天 14:20</div>
+
+        <!-- 用户消息 -->
+        <div class="msg-row right">
+            <div class="avatar user">我</div>
+            <div class="bubble-wrap">
+                <div class="bubble user"
+                     th:classappend="${userInputLength > 60 ? 'longer' : (userInputLength > 30 ? 'long' : '')}"
+                     th:text="${userInput}">
+                    前任又来找我了，我心动了怎么办
+                </div>
+            </div>
+        </div>
+
+        <!-- AI 骂醒回复 -->
+        <div class="msg-row">
+            <div class="avatar ai">🔥</div>
+            <div class="bubble-wrap">
+                <div class="name" th:text="${styleEmoji} + ' 骂醒 AI · ' + ${styleName}">🔥 骂醒 AI · 毒舌暴击</div>
+                <div class="bubble ai"
+                     th:classappend="${contentLength > 100 ? 'longer' : (contentLength > 60 ? 'long' : '')}"
+                     th:text="${content}">
+                    醒醒，你不是心动，是舍不得那些沉没成本。他要是真心，早就来了。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部品牌区 -->
+    <div class="footer">
+        <div class="brand">
+            <div class="brand-name">🔥 骂醒了么</div>
+            <div class="brand-slogan">你今天，骂醒了么？→ 微信搜"骂醒了么"</div>
+        </div>
+        <div class="qrcode">
+            <img th:if="${qrcodeUrl != null}" th:src="${qrcodeUrl}" alt="qr"
+                 style="width:100%;height:100%;border-radius:6px;"/>
+            <div th:unless="${qrcodeUrl != null}" class="qrcode-placeholder"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 后台管理</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f7;
+            padding: 40px 20px;
+            color: #1d1d1f;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .subtitle { color: #86868b; margin-bottom: 30px; }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .card h2 { font-size: 20px; margin-bottom: 20px; }
+        .token-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d2d2d7;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { color: #86868b; font-weight: 500; font-size: 13px; }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-green { background: #d1f7d1; color: #0a7e0a; }
+        .badge-blue { background: #d1e5ff; color: #0058c6; }
+        .badge-gray { background: #f0f0f0; color: #666; }
+        .badge-red { background: #ffd1d1; color: #c00; }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #0071e3;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            margin-right: 6px;
+        }
+        button:hover { background: #0077ed; }
+        button.secondary { background: #f0f0f0; color: #333; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .test-area { display: flex; gap: 10px; margin-top: 10px; }
+        .test-area input { flex: 1; padding: 10px 14px; border: 1px solid #d2d2d7; border-radius: 8px; }
+        .result-box {
+            margin-top: 15px; padding: 15px; background: #f5f5f7; border-radius: 8px;
+            white-space: pre-wrap; font-family: monospace; font-size: 13px; max-height: 300px; overflow-y: auto;
+        }
+        .msg { padding: 10px 14px; border-radius: 8px; margin-top: 10px; font-size: 13px; display: none; }
+        .msg.success { background: #d1f7d1; color: #0a7e0a; display: block; }
+        .msg.error { background: #ffd1d1; color: #c00; display: block; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🔥 骂醒了么 · 后台管理</h1>
+    <p class="subtitle">AI Provider 一键切换 / 测试</p>
+
+    <div class="card">
+        <h2>🔑 鉴权</h2>
+        <input class="token-input" id="adminToken" placeholder="请输入 Admin Token"
+               value="mxlm-admin-2026">
+        <button onclick="loadProviders()">加载 Provider 列表</button>
+        <div class="msg" id="authMsg"></div>
+    </div>
+
+    <div class="card">
+        <h2>🤖 AI Provider 列表</h2>
+        <table id="providerTable">
+            <thead>
+            <tr>
+                <th>Key</th>
+                <th>名称</th>
+                <th>状态</th>
+                <th>可用</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="providerBody">
+            <tr><td colspan="5" style="text-align:center;color:#999;">请先输入 Token 加载</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>🧪 Provider 测试</h2>
+        <p style="color:#86868b;font-size:13px;margin-bottom:10px;">直接调用指定 provider，不受 active 设置影响</p>
+        <div class="test-area">
+            <input id="testProvider" placeholder="providerKey，如 deepseek">
+            <input id="testInput" placeholder="测试输入，如：hello" value="用一句话骂醒我：我又想吃夜宵了">
+            <button onclick="testProvider()">测试</button>
+        </div>
+        <div class="result-box" id="testResult" style="display:none;"></div>
+    </div>
+</div>
+
+<script>
+    const API = ''; // 同源部署
+
+    function token() {
+        return document.getElementById('adminToken').value.trim();
+    }
+
+    function showMsg(id, ok, text) {
+        const el = document.getElementById(id);
+        el.className = 'msg ' + (ok ? 'success' : 'error');
+        el.textContent = text;
+    }
+
+    async function loadProviders() {
+        try {
+            const res = await fetch(API + '/admin/ai/providers', {
+                headers: { 'X-Admin-Token': token() }
+            });
+            const data = await res.json();
+            if (data.code !== 0) {
+                showMsg('authMsg', false, '❌ ' + data.message);
+                return;
+            }
+            showMsg('authMsg', true, '✅ 已加载 ' + data.data.length + ' 个 provider');
+            renderProviders(data.data);
+        } catch (e) {
+            showMsg('authMsg', false, '❌ 请求失败: ' + e.message);
+        }
+    }
+
+    function renderProviders(list) {
+        const tbody = document.getElementById('providerBody');
+        tbody.innerHTML = list.map(p => `
+      <tr>
+        <td><code>${p.key}</code></td>
+        <td>${p.name}</td>
+        <td>
+          ${p.isActive ? '<span class="badge badge-green">当前使用</span>' : ''}
+          ${p.isFallback ? '<span class="badge badge-blue">兜底</span>' : ''}
+        </td>
+        <td>${p.available
+            ? '<span class="badge badge-green">可用</span>'
+            : '<span class="badge badge-red">不可用</span>'}</td>
+        <td>
+          <button ${p.isActive ? 'disabled' : ''} onclick="switchTo('${p.key}')">设为主用</button>
+          <button class="secondary" onclick="switchFallback('${p.key}')">设为兜底</button>
+        </td>
+      </tr>
+    `).join('');
+    }
+
+    async function switchTo(key) {
+        const res = await fetch(API + '/admin/ai/switch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': token() },
+            body: JSON.stringify({ providerKey: key })
+        });
+        const data = await res.json();
+        if (data.code === 0) {
+            alert('✅ 已切换为 ' + key);
+            loadProviders();
+        } else {
+            alert('❌ ' + data.message);
+        }
+    }
+
+    async function switchFallback(key) {
+        const res = await fetch(API + '/admin/ai/switch-fallback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': token() },
+            body: JSON.stringify({ providerKey: key })
+        });
+        const data = await res.json();
+        if (data.code === 0) {
+            alert('✅ 兜底已切换为 ' + key);
+            loadProviders();
+        } else {
+            alert('❌ ' + data.message);
+        }
+    }
+
+    async function testProvider() {
+        const providerKey = document.getElementById('testProvider').value.trim();
+        const userInput = document.getElementById('testInput').value.trim();
+        if (!providerKey) { alert('请填 providerKey'); return; }
+
+        const box = document.getElementById('testResult');
+        box.style.display = 'block';
+        box.textContent = '⏳ 正在请求...';
+
+        try {
+            const res = await fetch(API + '/admin/ai/test', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Admin-Token': token() },
+                body: JSON.stringify({ providerKey, userInput })
+            });
+            const data = await res.json();
+            box.textContent = JSON.stringify(data, null, 2);
+        } catch (e) {
+            box.textContent = '❌ ' + e.message;
+        }
+    }
+</script>
+</body>
+</html>

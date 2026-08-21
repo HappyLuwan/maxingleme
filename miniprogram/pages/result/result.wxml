@@ -1,0 +1,68 @@
+<!-- pages/result/result.wxml -->
+<view class="page">
+  <!-- 顶部风格标签 -->
+  <view class="style-tag">
+    <text class="tag-emoji">{{roast.styleEmoji}}</text>
+    <text class="tag-name">{{roast.styleName}}·骂醒版</text>
+  </view>
+
+  <!-- 主内容：AI 骂醒文案 -->
+  <view class="content-box">
+    <view class="quote-mark">"</view>
+    <view class="content-text">{{roast.content}}</view>
+    <view class="quote-mark end">"</view>
+  </view>
+
+  <!-- 卡片预览区 -->
+  <view wx:if="{{cardImageUrl}}" class="card-preview">
+    <view class="preview-label">
+      <text>🎨 分享卡片已生成</text>
+    </view>
+    <image class="card-image" src="{{cardImageUrl}}" mode="widthFix" show-menu-by-longpress="{{true}}"/>
+    <view class="preview-tip">长按图片可保存 / 分享</view>
+  </view>
+
+  <!-- 模板选择 -->
+  <view class="template-wrap">
+    <view class="input-label">
+      <text class="dot"></text>
+      <text>选一个卡片风格</text>
+    </view>
+    <view class="template-grid">
+      <view wx:for="{{templates}}"
+            wx:key="key"
+            class="template-item {{selectedTemplate === item.key ? 'active' : ''}}"
+            data-key="{{item.key}}"
+            bindtap="onSelectTemplate">
+        <view class="template-icon">{{item.icon}}</view>
+        <view class="template-name">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="actions">
+    <button class="g-btn primary-btn"
+            loading="{{generatingCard}}"
+            disabled="{{generatingCard}}"
+            bindtap="onGenerateCard">
+      {{generatingCard ? '生成中...' : (cardImageUrl ? '🎨 换个卡片' : '🎨 生成分享卡片')}}
+    </button>
+
+    <view class="secondary-actions">
+      <button class="g-btn-ghost half"
+              wx:if="{{cardImageUrl}}"
+              bindtap="onSaveImage">
+        📥 保存图片
+      </button>
+      <button class="g-btn-ghost {{cardImageUrl ? 'half' : 'full'}}"
+              open-type="share">
+        📤 分享给朋友
+      </button>
+    </view>
+
+    <button class="g-btn-ghost full again-btn" bindtap="onAgain">
+      🔥 再骂一次
+    </button>
+  </view>
+</view>

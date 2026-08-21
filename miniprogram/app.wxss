@@ -1,0 +1,67 @@
+/* app.wxss - 全局样式 */
+
+page {
+  background: #0a0a0a;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==== 通用容器 ==== */
+.container {
+  min-height: 100vh;
+  padding: 40rpx 40rpx calc(40rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+/* ==== 主品牌色 ==== */
+.brand-color { color: #ff4757; }
+.brand-bg { background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%); }
+
+/* ==== 卡片容器 ==== */
+.g-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+}
+
+/* ==== 按钮 ==== */
+.g-btn {
+  background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%);
+  color: #fff;
+  border-radius: 100rpx;
+  padding: 28rpx 60rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  text-align: center;
+  border: none;
+  letter-spacing: 4rpx;
+  box-shadow: 0 10rpx 30rpx rgba(255, 71, 87, 0.35);
+}
+
+.g-btn::after {
+  border: none;
+}
+
+.g-btn[disabled] {
+  opacity: 0.5;
+}
+
+.g-btn-ghost {
+  background: transparent;
+  color: #fff;
+  border-radius: 100rpx;
+  padding: 24rpx 40rpx;
+  font-size: 28rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  text-align: center;
+}
+
+.g-btn-ghost::after {
+  border: none;
+}
+
+/* ==== 文字辅助类 ==== */
+.text-muted { color: rgba(255, 255, 255, 0.5); }
+.text-hint  { color: rgba(255, 255, 255, 0.35); }
