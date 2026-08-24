@@ -192,3 +192,14 @@
   color: rgba(255, 255, 255, 0.7) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
+
+/* ==== 免责声明 ==== */
+.disclaimer {
+  text-align: center;
+  margin-top: 20rpx;
+  padding: 16rpx 20rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.5rpx;
+  line-height: 1.6;
+}

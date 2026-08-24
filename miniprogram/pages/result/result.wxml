@@ -63,5 +63,9 @@
     <button class="g-btn-ghost full again-btn" bindtap="onAgain">
       🔥 再骂一次
     </button>
+
+    <view class="disclaimer">
+      ⚠️ 内容由 AI 生成，不构成任何专业建议，危险情况请及时寻求救助
+    </view>
   </view>
 </view>

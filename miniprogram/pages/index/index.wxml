@@ -38,7 +38,7 @@
     <view class="style-grid">
       <view wx:for="{{styles}}"
             wx:key="key"
-            class="style-item {{selectedStyle === item.key ? 'active' : ''}} {{!item.enabled ? 'disabled' : ''}} {{item.key === 'custom' ? 'style-item-wide' : ''}}"
+            class="style-item {{selectedStyle === item.key ? 'active' : ''}} {{!item.enabled ? 'disabled' : ''}}"
             data-key="{{item.key}}"
             bindtap="onSelectStyle">
         <view class="style-emoji">{{item.emoji}}</view>
@@ -55,8 +55,11 @@
     <button class="g-btn action-btn"
             disabled="{{loading || !canSubmit}}"
             bindtap="onRoast">
-      {{loading ? (selectedStyle === 'custom' ? '正在生成卡片...' : '正在骂醒你...') : (selectedStyle === 'custom' ? '生成金句海报 →' : '狠狠骂醒我 →')}}
+      {{loading ? '正在骂醒你...' : '狠狠骂醒我 →'}}
     </button>
+    <view class="disclaimer">
+      ⚠️ 内容由 AI 生成，不构成任何专业建议，危险情况请及时寻求救助
+    </view>
   </view>
 
   <!-- 底部示例 -->
@@ -69,5 +72,14 @@
           bindtap="onExampleTap">
       <text>{{item}}</text>
     </view>
+  </view>
+
+  <!-- 页脚：协议与关于 -->
+  <view class="page-footer">
+    <text class="footer-link" bindtap="onNavAgreement">用户协议</text>
+    <text class="footer-divider">·</text>
+    <text class="footer-link" bindtap="onNavPrivacy">隐私政策</text>
+    <text class="footer-divider">·</text>
+    <text class="footer-link" bindtap="onNavAbout">关于</text>
   </view>
 </view>

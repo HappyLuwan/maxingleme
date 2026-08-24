@@ -69,8 +69,28 @@ class PlaywrightPool:
         )
         try:
             page = context.new_page()
-            page.set_content(html, wait_until="networkidle")
-            page.wait_for_timeout(200)
+            # 拦截所有第三方字体/图片外链，防止容器内无法访问外网导致渲染卡死
+            def _block_external(route):
+                url = route.request.url
+                if any(host in url for host in (
+                    "fonts.googleapis.com",
+                    "fonts.gstatic.com",
+                    "googleapis.com",
+                    "gstatic.com",
+                )):
+                    route.abort()
+                else:
+                    route.continue_()
+
+            try:
+                page.route("**/*", _block_external)
+            except Exception as e:
+                logger.warning("[PlaywrightPool] 设置路由拦截失败（忽略）：%s", e)
+
+            # 用 domcontentloaded 代替 networkidle，避免被外链阻塞
+            # 并设置 8s 超时（相对温和，若 HTML 本身有问题也能及时失败）
+            page.set_content(html, wait_until="domcontentloaded", timeout=8000)
+            page.wait_for_timeout(300)  # 稍等布局/字体应用完成
             return page.screenshot(type="png", full_page=False, omit_background=False)
         finally:
             context.close()

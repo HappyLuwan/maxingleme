@@ -1,7 +1,10 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/result/result"
+    "pages/result/result",
+    "pages/agreement/agreement",
+    "pages/privacy/privacy",
+    "pages/about/about"
   ],
   "window": {
     "backgroundTextStyle": "dark",

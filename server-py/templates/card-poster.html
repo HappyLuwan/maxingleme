@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>骂醒了么 · 海报卡片</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Ma+Shan+Zheng&display=swap');
+        /* 移除 Google Fonts 外链，容器内无法访问会导致渲染阻塞失败 */
 
         * {
             margin: 0;
@@ -15,7 +15,7 @@
         html, body {
             width: 750px;
             height: 1000px;
-            font-family: 'Noto Serif SC', 'PingFang SC', 'Songti SC', serif;
+            font-family: 'Songti SC', 'STSong', 'SimSun', 'PingFang SC', serif;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -59,7 +59,7 @@
         }
 
         .top-symbol {
-            font-family: 'Ma Shan Zheng', 'Songti SC', serif;
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', serif;
             font-size: 42px;
             color: #8b6f47;
             font-weight: 700;
@@ -79,7 +79,7 @@
         }
 
         .quote-mark {
-            font-family: 'Georgia', 'Songti SC', serif;
+            font-family: 'Georgia', 'Songti SC', 'STSong', serif;
             font-size: 100px;
             color: rgba(139, 111, 71, 0.35);
             line-height: 0.5;
@@ -87,7 +87,7 @@
         }
 
         .quote {
-            font-family: 'Noto Serif SC', 'Songti SC', serif;
+            font-family: 'Songti SC', 'STSong', 'SimSun', serif;
             font-size: 44px;
             font-weight: 700;
             line-height: 1.9;
@@ -107,7 +107,7 @@
         }
 
         .quote-mark-end {
-            font-family: 'Georgia', 'Songti SC', serif;
+            font-family: 'Georgia', 'Songti SC', 'STSong', serif;
             font-size: 100px;
             color: rgba(139, 111, 71, 0.35);
             line-height: 0.5;
@@ -119,7 +119,7 @@
         .signature {
             text-align: right;
             margin-top: 40px;
-            font-family: 'Ma Shan Zheng', 'Songti SC', serif;
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', serif;
             font-size: 28px;
             color: #8b6f47;
             letter-spacing: 4px;
@@ -142,7 +142,7 @@
         }
 
         .brand-name {
-            font-family: 'Ma Shan Zheng', 'Songti SC', serif;
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', serif;
             font-size: 34px;
             font-weight: 700;
             color: #a02020;
@@ -153,7 +153,7 @@
             font-size: 20px;
             color: #8b6f47;
             letter-spacing: 2px;
-            font-family: 'Noto Serif SC', serif;
+            font-family: 'Songti SC', 'STSong', serif;
         }
 
         .right-block {
@@ -172,7 +172,7 @@
             justify-content: center;
             flex-direction: column;
             color: #a02020;
-            font-family: 'Ma Shan Zheng', 'Songti SC', serif;
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', serif;
             font-weight: 700;
             transform: rotate(-8deg);
             background: rgba(160, 32, 32, 0.05);

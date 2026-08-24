@@ -150,32 +150,6 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* "一句话暴击"横跨整行 + 突出配色 */
-.style-item-wide {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16rpx;
-  padding: 20rpx 14rpx;
-  background: linear-gradient(135deg, rgba(255, 71, 87, 0.15), rgba(255, 140, 58, 0.1));
-  border-color: rgba(255, 71, 87, 0.3);
-}
-
-.style-item-wide .style-emoji {
-  font-size: 40rpx;
-  margin-bottom: 0;
-}
-
-.style-item-wide .style-name {
-  font-size: 28rpx;
-}
-
-.style-item-wide.active {
-  background: linear-gradient(135deg, rgba(255, 71, 87, 0.25), rgba(255, 140, 58, 0.2));
-  border-color: #ff4757;
-}
-
 .style-badge {
   position: absolute;
   top: 8rpx;
@@ -243,4 +217,36 @@
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.5;
   border: 1rpx solid rgba(255, 255, 255, 0.05);
+}
+
+/* ==== 免责声明 ==== */
+.disclaimer {
+  text-align: center;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.5rpx;
+  line-height: 1.5;
+}
+
+/* ==== 页脚：协议入口 ==== */
+.page-footer {
+  margin-top: 4vh;
+  padding: 20rpx 0 10rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14rpx;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.3);
+  border-top: 1rpx dashed rgba(255, 255, 255, 0.06);
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.55);
+  padding: 6rpx 4rpx;
+}
+
+.footer-divider {
+  color: rgba(255, 255, 255, 0.2);
 }

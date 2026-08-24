@@ -125,5 +125,26 @@ Page({
       title: '🔥 骂醒了么 - 你的 AI 嘴替',
       query: ''
     }
+  },
+
+  /**
+   * 页脚跳转 - 用户协议
+   */
+  onNavAgreement() {
+    wx.navigateTo({ url: '/pages/agreement/agreement' })
+  },
+
+  /**
+   * 页脚跳转 - 隐私政策
+   */
+  onNavPrivacy() {
+    wx.navigateTo({ url: '/pages/privacy/privacy' })
+  },
+
+  /**
+   * 页脚跳转 - 关于
+   */
+  onNavAbout() {
+    wx.navigateTo({ url: '/pages/about/about' })
   }
 })
