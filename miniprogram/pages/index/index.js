@@ -33,9 +33,13 @@ Page({
       // 兜底：本地静态列表
       this.setData({
         styles: [
-          { key: 'dushe', name: '毒舌暴击', emoji: '🔥', description: '犀利如刀，一针见血', enabled: true },
+          { key: 'dushe', name: '毒舌闺蜜', emoji: '⚡️', description: '犀利如刀，一针见血', enabled: true },
           { key: 'dongbei', name: '东北大姐', emoji: '🌶️', description: '东北大姐附体', enabled: true },
-          { key: 'wenrou', name: '温柔姐姐', emoji: '🌸', description: '温柔知性，直击心底', enabled: true }
+          { key: 'wenrou', name: '温柔姐姐', emoji: '🌸', description: '温柔知性，直击心底', enabled: true },
+          { key: 'luxun', name: '鲁迅式', emoji: '📜', description: '深刻犀利，字字诛心', enabled: true },
+          { key: 'zhexue', name: '哲学家', emoji: '🌙', description: '从哲学高度让你顿悟', enabled: true },
+          { key: 'yinyang', name: '阴阳怪气', emoji: '😏', description: '阴阳怪气小天才', enabled: true },
+          { key: 'yiju', name: '一句话暴击', emoji: '💥', description: '一句话骂醒，方便截图分享', enabled: true }
         ]
       })
     })

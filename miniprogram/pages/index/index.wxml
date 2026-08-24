@@ -6,14 +6,14 @@
       <text class="logo-fire">🔥</text>
       <text class="logo-text">骂醒了么</text>
     </view>
-    <view class="slogan">今天，你被自己感动到了么？</view>
+<view class="slogan">今天又被自己感动了嘛？快醒醒</view>
   </view>
 
   <!-- 输入区 -->
   <view class="input-wrap">
     <view class="input-label">
       <text class="dot"></text>
-      <text>说说你的困扰，让 AI 一句话骂醒你</text>
+      <text>说说你的困扰，让我来骂醒你!</text>
     </view>
     <textarea class="input-area"
               placeholder="例如：前任又来找我了，我心动了..."
@@ -38,12 +38,12 @@
     <view class="style-grid">
       <view wx:for="{{styles}}"
             wx:key="key"
-            class="style-item {{selectedStyle === item.key ? 'active' : ''}} {{!item.enabled ? 'disabled' : ''}}"
+            class="style-item {{selectedStyle === item.key ? 'active' : ''}} {{!item.enabled ? 'disabled' : ''}} {{item.key === 'yiju' ? 'style-item-wide' : ''}}"
             data-key="{{item.key}}"
             bindtap="onSelectStyle">
         <view class="style-emoji">{{item.emoji}}</view>
         <view class="style-name">{{item.name}}</view>
-        <view class="style-desc">{{item.description}}</view>
+        <view wx:if="{{item.key === 'yiju'}}" class="style-badge">推荐分享</view>
         <view wx:if="{{!item.enabled}}" class="soon-tag">敬请期待</view>
       </view>
     </view>
@@ -52,14 +52,10 @@
   <!-- 骂醒按钮 -->
   <view class="action-wrap">
     <button class="g-btn action-btn"
-            loading="{{loading}}"
             disabled="{{loading || !canSubmit}}"
             bindtap="onRoast">
       {{loading ? '正在骂醒你...' : '狠狠骂醒我 →'}}
     </button>
-    <view class="tip">
-      <text>💡 骂完可以生成精美卡片分享给朋友</text>
-    </view>
   </view>
 
   <!-- 底部示例 -->

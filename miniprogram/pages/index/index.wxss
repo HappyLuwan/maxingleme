@@ -2,7 +2,8 @@
 
 .page {
   min-height: 100vh;
-  padding: 40rpx 40rpx calc(60rpx + env(safe-area-inset-bottom));
+  /* 横向 rpx 翻转适配屏宽；纵向 vh 适配屏高短屏自动收紧长屏自动舌展 */
+  padding: 2vh 40rpx calc(3vh + env(safe-area-inset-bottom));
   background: 
     radial-gradient(ellipse at top left, rgba(255, 71, 87, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at bottom right, rgba(255, 140, 58, 0.1) 0%, transparent 50%),
@@ -12,7 +13,7 @@
 
 /* ==== 顶部品牌区 ==== */
 .header {
-  padding: 40rpx 0 60rpx;
+  padding: 2vh 0 3vh;
   text-align: center;
 }
 
@@ -49,7 +50,7 @@
   background: rgba(255, 255, 255, 0.04);
   border-radius: 24rpx;
   padding: 32rpx;
-  margin-bottom: 40rpx;
+  margin-bottom: 2.5vh;
   border: 1rpx solid rgba(255, 255, 255, 0.06);
 }
 
@@ -73,7 +74,7 @@
 
 .input-area {
   width: 100%;
-  min-height: 200rpx;
+  min-height: 180rpx;
   font-size: 32rpx;
   color: #fff;
   line-height: 1.6;
@@ -96,7 +97,7 @@
 
 /* ==== 风格选择 ==== */
 .style-wrap {
-  margin-bottom: 50rpx;
+  margin-bottom: 3vh;
 }
 
 .style-grid {
@@ -108,7 +109,7 @@
 .style-item {
   background: rgba(255, 255, 255, 0.04);
   border-radius: 20rpx;
-  padding: 28rpx 16rpx;
+  padding: 26rpx 14rpx;
   text-align: center;
   border: 2rpx solid rgba(255, 255, 255, 0.06);
   position: relative;
@@ -127,21 +128,15 @@
 }
 
 .style-emoji {
-  font-size: 48rpx;
-  margin-bottom: 12rpx;
+  font-size: 46rpx;
+  margin-bottom: 8rpx;
+  line-height: 1.2;
 }
 
 .style-name {
   font-size: 28rpx;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 6rpx;
-}
-
-.style-desc {
-  font-size: 20rpx;
-  color: rgba(255, 255, 255, 0.4);
-  line-height: 1.4;
 }
 
 .soon-tag {
@@ -155,15 +150,55 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+/* "一句话暴击"横跨整行 + 突出配色 */
+.style-item-wide {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 20rpx 14rpx;
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.15), rgba(255, 140, 58, 0.1));
+  border-color: rgba(255, 71, 87, 0.3);
+}
+
+.style-item-wide .style-emoji {
+  font-size: 40rpx;
+  margin-bottom: 0;
+}
+
+.style-item-wide .style-name {
+  font-size: 28rpx;
+}
+
+.style-item-wide.active {
+  background: linear-gradient(135deg, rgba(255, 71, 87, 0.25), rgba(255, 140, 58, 0.2));
+  border-color: #ff4757;
+}
+
+.style-badge {
+  position: absolute;
+  top: 8rpx;
+  right: 12rpx;
+  font-size: 18rpx;
+  padding: 2rpx 12rpx;
+  background: linear-gradient(135deg, #ff4757, #ff8c3a);
+  border-radius: 100rpx;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+}
+
 /* ==== 骂醒按钮 ==== */
 .action-wrap {
-  margin-bottom: 60rpx;
+  margin-bottom: 3vh;
 }
 
 .action-btn {
   width: 100%;
   height: 100rpx;
   line-height: 100rpx;
+  padding: 0 !important;
   font-size: 34rpx;
   border-radius: 100rpx;
   font-weight: 900;
@@ -171,32 +206,35 @@
   background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%) !important;
   color: #fff !important;
   box-shadow: 0 12rpx 32rpx rgba(255, 71, 87, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tip {
   text-align: center;
-  margin-top: 24rpx;
-  font-size: 24rpx;
+  margin-top: 14rpx;
+  font-size: 22rpx;
   color: rgba(255, 255, 255, 0.4);
 }
 
 /* ==== 示例 ==== */
 .examples {
-  padding-top: 40rpx;
+  padding-top: 2vh;
   border-top: 1rpx dashed rgba(255, 255, 255, 0.1);
 }
 
 .examples-title {
   font-size: 26rpx;
   color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 20rpx;
+  margin-bottom: 18rpx;
 }
 
 .example-item {
-  padding: 20rpx 24rpx;
+  padding: 18rpx 22rpx;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 16rpx;
-  margin-bottom: 16rpx;
+  border-radius: 14rpx;
+  margin-bottom: 14rpx;
   font-size: 26rpx;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.5;

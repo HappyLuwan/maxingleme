@@ -2,7 +2,8 @@
 
 .page {
   min-height: 100vh;
-  padding: 40rpx 40rpx calc(60rpx + env(safe-area-inset-bottom));
+  /* 横向 rpx适配屏宽；纵向 vh适配屏高 */
+  padding: 2vh 40rpx calc(3vh + env(safe-area-inset-bottom));
   background: 
     radial-gradient(ellipse at top left, rgba(255, 71, 87, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at bottom right, rgba(255, 140, 58, 0.1) 0%, transparent 50%),
@@ -18,7 +19,7 @@
   background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%);
   border-radius: 100rpx;
   padding: 14rpx 32rpx;
-  margin-bottom: 40rpx;
+  margin-bottom: 2.5vh;
   box-shadow: 0 8rpx 24rpx rgba(255, 71, 87, 0.3);
 }
 
@@ -37,8 +38,8 @@
 .content-box {
   background: rgba(255, 255, 255, 0.06);
   border-radius: 32rpx;
-  padding: 60rpx 40rpx;
-  margin-bottom: 50rpx;
+  padding: 4vh 40rpx;
+  margin-bottom: 3vh;
   position: relative;
   border: 1rpx solid rgba(255, 255, 255, 0.08);
 }
@@ -68,7 +69,7 @@
 
 /* ==== 卡片预览 ==== */
 .card-preview {
-  margin-bottom: 40rpx;
+  margin-bottom: 2.5vh;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 24rpx;
   padding: 24rpx;
@@ -98,7 +99,7 @@
 
 /* ==== 模板选择 ==== */
 .template-wrap {
-  margin-bottom: 40rpx;
+  margin-bottom: 2.5vh;
 }
 
 .input-label {
@@ -160,6 +161,7 @@
   width: 100%;
   height: 96rpx;
   line-height: 96rpx;
+  padding: 0 !important;
   font-size: 32rpx;
   border-radius: 100rpx;
   font-weight: 700;
@@ -167,6 +169,9 @@
   color: #fff !important;
   box-shadow: 0 10rpx 30rpx rgba(255, 71, 87, 0.35);
   margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .secondary-actions {

@@ -13,7 +13,8 @@ Page({
     templates: [
       { key: 'chat', name: '聊天截图风', icon: '💬' },
       { key: 'attack', name: '暴击语录风', icon: '💥' },
-      { key: 'poster', name: '海报文艺风', icon: '📜' }
+      { key: 'poster', name: '海报文艺风', icon: '📜' },
+      { key: 'punch', name: '金句海报风', icon: '⚡️' }
     ],
     selectedTemplate: 'chat',
     generatingCard: false,
@@ -24,7 +25,9 @@ Page({
     // 从本地缓存拿骂醒数据（首页存的）
     const roast = wx.getStorageSync('lastRoast')
     if (roast && roast.roastId === options.roastId) {
-      this.setData({ roast })
+      // 一句话暴击默认选金句海报模板，其他保持 chat
+      const defaultTpl = roast.style === 'yiju' ? 'punch' : 'chat'
+      this.setData({ roast, selectedTemplate: defaultTpl })
     } else {
       wx.showToast({ title: '数据丢失，请重新骂醒', icon: 'none' })
       setTimeout(() => wx.navigateBack(), 1500)
