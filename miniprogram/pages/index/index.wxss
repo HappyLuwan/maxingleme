@@ -189,6 +189,10 @@
   letter-spacing: 1rpx;
 }
 
+.style-badge-custom {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
 /* ==== 骂醒按钮 ==== */
 .action-wrap {
   margin-bottom: 3vh;

@@ -17,13 +17,12 @@ class StyleMeta:
 
 
 class RoastStyle(Enum):
-    DUSHE = StyleMeta("dushe", "毒舌闺蜜", "⚡️", "犀利如刀，一针见血")
-    DONGBEI = StyleMeta("dongbei", "东北大姐", "🌶️", "东北大姐附体，让你听得又气又服")
+    YIJU = StyleMeta("yiju", "一针见血", "💥", "一句话骂醒你，字字暴击")
+    YINYANG = StyleMeta("yinyang", "阴阳怪气", "😏", "阴阳怪气小天才")
     WENROU = StyleMeta("wenrou", "温柔姐姐", "🌸", "温柔知性，说到你心里去")
     LUXUN = StyleMeta("luxun", "鲁迅式", "📜", "深刻犀利，字字诛心")
     ZHEXUE = StyleMeta("zhexue", "哲学家", "🌙", "从哲学高度让你顿悟")
-    YINYANG = StyleMeta("yinyang", "阴阳怪气", "😏", "阴阳怪气小天才")
-    YIJU = StyleMeta("yiju", "一句话暴击", "💥", "一句话骂醒你，方便截图分享")
+    CUSTOM = StyleMeta("custom", "自定义", "✍️", "输入什么，卡片就是什么")
 
     @property
     def key(self) -> str:
@@ -43,24 +42,23 @@ class RoastStyle(Enum):
 
     @classmethod
     def from_key(cls, key: str | None) -> "RoastStyle":
-        """根据 key 查找，找不到返回默认 DUSHE"""
+        """根据 key 查找，找不到返回默认 YIJU"""
         if not key:
-            return cls.DUSHE
+            return cls.YIJU
         for s in cls:
             if s.value.key.lower() == key.lower():
                 return s
-        return cls.DUSHE
+        return cls.YIJU
 
 
 # MVP 阶段启用的风格（前端 style 选择器可用）
 MVP_ENABLED = {
-    RoastStyle.DUSHE,
-    RoastStyle.DONGBEI,
+    RoastStyle.YIJU,
+    RoastStyle.YINYANG,
     RoastStyle.WENROU,
     RoastStyle.LUXUN,
     RoastStyle.ZHEXUE,
-    RoastStyle.YINYANG,
-    RoastStyle.YIJU,
+    RoastStyle.CUSTOM,
 }
 
 
@@ -72,10 +70,9 @@ class CardTemplate:
 
 
 CARD_TEMPLATES: dict[str, CardTemplate] = {
-    "attack": CardTemplate("attack", "暴击语录", "card-attack.html"),
+    "punch": CardTemplate("punch", "金句海报", "card-punch.html"),
     "chat": CardTemplate("chat", "聊天截图", "card-chat.html"),
     "poster": CardTemplate("poster", "语录海报", "card-poster.html"),
-    "punch": CardTemplate("punch", "金句海报", "card-punch.html"),
 }
 
 

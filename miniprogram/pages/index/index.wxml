@@ -16,7 +16,7 @@
       <text>说说你的困扰，让我来骂醒你!</text>
     </view>
     <textarea class="input-area"
-              placeholder="例如：前任又来找我了，我心动了..."
+              placeholder="{{selectedStyle === 'custom' ? '输入你想放在海报上的一句话文案...' : '例如：前任又来找我了，我心动了...'}}"
               placeholder-class="input-placeholder"
               maxlength="500"
               value="{{userInput}}"
@@ -38,12 +38,13 @@
     <view class="style-grid">
       <view wx:for="{{styles}}"
             wx:key="key"
-            class="style-item {{selectedStyle === item.key ? 'active' : ''}} {{!item.enabled ? 'disabled' : ''}} {{item.key === 'yiju' ? 'style-item-wide' : ''}}"
+            class="style-item {{selectedStyle === item.key ? 'active' : ''}} {{!item.enabled ? 'disabled' : ''}} {{item.key === 'custom' ? 'style-item-wide' : ''}}"
             data-key="{{item.key}}"
             bindtap="onSelectStyle">
         <view class="style-emoji">{{item.emoji}}</view>
         <view class="style-name">{{item.name}}</view>
         <view wx:if="{{item.key === 'yiju'}}" class="style-badge">推荐分享</view>
+        <view wx:if="{{item.key === 'custom'}}" class="style-badge style-badge-custom">不调用AI</view>
         <view wx:if="{{!item.enabled}}" class="soon-tag">敬请期待</view>
       </view>
     </view>
@@ -54,7 +55,7 @@
     <button class="g-btn action-btn"
             disabled="{{loading || !canSubmit}}"
             bindtap="onRoast">
-      {{loading ? '正在骂醒你...' : '狠狠骂醒我 →'}}
+      {{loading ? (selectedStyle === 'custom' ? '正在生成卡片...' : '正在骂醒你...') : (selectedStyle === 'custom' ? '生成金句海报 →' : '狠狠骂醒我 →')}}
     </button>
   </view>
 

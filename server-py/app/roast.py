@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # ---------- DTO ----------
 class RoastRequestDTO(BaseModel):
     user_input: str = Field(alias="userInput")
-    style: Optional[str] = "dushe"
+    style: Optional[str] = "yiju"
     openid: Optional[str] = None
 
     model_config = {"populate_by_name": True}
@@ -56,6 +56,31 @@ def roast(request: RoastRequestDTO) -> RoastResponseDTO:
 
     # 解析风格
     style = RoastStyle.from_key(request.style)
+
+    # 自定义风格：不调用 AI，用户输入即为最终文案
+    if style == RoastStyle.CUSTOM:
+        record = RoastRecord(
+            roast_id="",
+            user_input=user_input,
+            content=user_input,
+            style=style,
+            openid=request.openid,
+            provider="custom",
+        )
+        record = repo.save(record)
+        logger.info(
+            "[Roast] custom id=%s len=%d", record.roast_id, len(user_input)
+        )
+        return RoastResponseDTO(
+            roast_id=record.roast_id,
+            content=user_input,
+            style=style.key,
+            style_name=style.display_name,
+            style_emoji=style.emoji,
+            provider="custom",
+            cost_millis=0,
+        )
+
     prompt = get_prompt(style)
 
     # 调用 AI
