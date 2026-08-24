@@ -39,36 +39,36 @@
 
 1. **打包代码**（在项目根目录执行）
    ```bash
-   cd /Users/breatche/code/wechat-demo/server
-   zip -r ../maxingleme-server.zip . -x "target/*" -x ".idea/*" -x "*.iml"
+   cd /Users/breatche/code/wechat-demo/server-py
+   zip -r ../maxingleme-server.zip . -x "__pycache__/*" -x ".venv/*" -x ".idea/*" -x ".env"
    ```
 2. 进入云托管 → 选择服务 `maxingleme-server` → **版本管理** → **新建版本**
 3. 上传方式选 **"本地代码"** → 选择刚才的 `maxingleme-server.zip`
 4. **构建配置**：
    - Dockerfile 路径：`Dockerfile`（默认）
    - 端口：`8080`
-   - 副本数：`1-1`（省钱）
-   - CPU / 内存：`1 核 / 1G`（Playwright 至少 1G）
+   - 副本数：`0-2`（缩容到 0 更省钱；有稳定用户后改 1-2）
+   - CPU / 内存：**`1 核 / 2G`**（Chromium 需要）
 5. **环境变量**（点"添加环境变量"，逐个填）：
 
    | 变量名 | 值 | 说明 |
    |---|---|---|
-   | `SPRING_PROFILES_ACTIVE` | `prod` | 激活生产 profile |
-   | `DEEPSEEK_API_URL` | `https://api.deepseek.com/v1/chat/completions` | DeepSeek 官方地址 |
+   | `AI_ACTIVE_PROVIDER` | `deepseek` | 默认启用的 provider |
+   | `AI_FALLBACK_PROVIDER` | `hunyuan` | 兜底 provider |
+   | `DEEPSEEK_API_URL` | `https://api.deepseek.com/v1` | DeepSeek 官方 base_url |
    | `DEEPSEEK_API_KEY` | `sk-你自己申请的Key` | https://platform.deepseek.com/ |
    | `DEEPSEEK_MODEL` | `deepseek-chat` | 或 `deepseek-reasoner` |
    | `ADMIN_TOKEN` | `换一个强密码，例如 mxlm-x8k3f9` | 用于访问 `/admin.html` |
-   | `WX_APPID` | `你的小程序 AppID` | 内容安全 API 用 |
-   | `WX_SECRET` | `你的小程序 AppSecret` | mp后台→开发管理→开发设置 |
-   | `CARD_OUTPUT_DIR` | `/data/mxlm-cards` | Dockerfile 里已建好 |
+   | `CARD_OUTPUT_DIR` | `/tmp/mxlm-cards` | Dockerfile 里已建好 |
 
-6. **点"提交"**，等待构建（首次约 5-10 分钟，因为要拉 Playwright 镜像）
+6. **点"提交"**，等待构建（Python 版首次约 3-5 分钟，比 Java 版快很多）
 7. 构建成功后 → **版本管理** → 找到刚才的版本 → **发布**
 
 ### 方式 B：Git 仓库连接（自动化，适合后续迭代）
 
 - 需先把代码推到 GitHub/Gitee
 - 云托管 → 服务 → 新建版本 → **"代码仓库"** → 授权并选仓库
+- **⚠️ 目标目录填 `server-py/`**（Python 版目录），Dockerfile 路径填 `Dockerfile`
 - 剩下配置同方式 A
 
 ---
@@ -114,18 +114,19 @@ const config = {
 - 云托管服务是否已"发布"（新建版本 ≠ 发布）
 
 ### Q3：构建卡在 Playwright 步骤 / 超时
-- 云托管首次拉 `mcr.microsoft.com/playwright/java` 镜像较慢（~1G），耐心等
+- Python 版基于 `python:3.12-slim`，`playwright install chromium` 会下载约 150MB
 - 如果超时，重试构建即可
-- 也可以改用国内镜像加速
+- 也可以在 Dockerfile 里加国内 pip 镜像加速（已默认使用腾讯源）
 
 ### Q4：AI 一直返回 Mock 内容
 - 检查 `DEEPSEEK_API_KEY` 是否配了、有余额
-- 打开 `https://<你的公网访问域名>/admin.html`（需先开公网访问）
-- 或改代码硬切：`application.yml` 里 `ai.default-provider: mock` 改为 `deepseek`
+- 检查 `AI_ACTIVE_PROVIDER=deepseek` 是否设置正确
+- 查看云托管日志确认 provider 加载情况（搜 `AIRouter` 关键字）
 
 ### Q5：卡片图不显示 / 一片空白
-- Playwright 内存不够，把云托管内存调到 **至少 1G**（推荐 2G）
-- 看云托管日志：搜 `CardService` 关键字
+- Playwright 内存不够，把云托管内存调到 **至少 2G**
+- 看云托管日志：搜 `CardService` 或 `PlaywrightPool` 关键字
+- 首次启动 Playwright 初始化约需 3-5 秒，请求要预留超时
 
 ### Q6：想切换 AI 供应商
 - 部署完成后，云托管 → 服务 → **公网访问** → 开启（会给一个 `https://xxx.service.tcloudbase.com` 的域名）

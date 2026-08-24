@@ -1,0 +1,12 @@
+# 微信云托管 CloudBase Run 配置
+containerPort: 8080
+minNum: 0
+maxNum: 2
+cpu: 1
+mem: 2
+policyType: cpu
+policyThreshold: 60
+customLogs: stdout
+initialDelaySeconds: 30
+buildDir: .
+dockerfilePath: Dockerfile

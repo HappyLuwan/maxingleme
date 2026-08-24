@@ -1,0 +1,25 @@
+# ==========================================
+# 骂醒了么后端 Python 依赖
+# ==========================================
+
+# Web 框架
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+
+# 配置管理 & 数据校验
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+
+# HTML 模板
+Jinja2==3.1.4
+
+# 无头浏览器（用于卡片截图）
+playwright==1.47.0
+
+# HTTP 客户端 & LLM 调用
+# OpenAI SDK 已成为事实标准协议：DeepSeek / 混元 / 豆包 / 通义千问 全部兼容
+openai==1.51.0
+
+# YAML 配置解析
+PyYAML==6.0.2

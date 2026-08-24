@@ -1,0 +1,32 @@
+# Python 缓存
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# 虚拟环境
+venv/
+.venv/
+
+# 敏感环境变量
+.env
+.env.local
+
+# IDE
+.idea
+.vscode
+*.swp
+
+# 系统
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# 卡片输出
+mxlm-cards/
+
+# 文档
+README.md
