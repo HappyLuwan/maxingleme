@@ -1,0 +1,54 @@
+<!-- pages/privacy/privacy.wxml -->
+<view class="page">
+  <view class="doc-title">「骂醒了么」隐私政策</view>
+  <view class="doc-meta">更新日期：{{updatedAt}}｜生效日期：{{updatedAt}}</view>
+
+  <view class="section-title">引言</view>
+  <view class="para">我们（「骂醒了么」小程序开发者）深知个人信息对你的重要性，并会尽全力保护你的隐私。请你在使用本小程序前仔细阅读本政策，充分理解各条款内容后再开始使用。</view>
+
+  <view class="section-title">一、我们收集的信息</view>
+  <view class="para"><text class="hl">1. 你主动提供的信息：</text></view>
+  <view class="para">· <text class="tag">困扰文本</text>：你在输入框中输入的困扰、烦恼等文本内容，用于调用 AI 生成骂醒文案。</view>
+  <view class="para">· <text class="tag">风格偏好</text>：你选择的骂醒风格（如温柔姐姐、鲁迅式等）。</view>
+
+  <view class="para"><text class="hl">2. 系统自动收集的信息：</text></view>
+  <view class="para">· <text class="tag">日志信息</text>：请求时间、请求 ID、错误日志（用于故障排查，不含个人身份信息）。</view>
+  <view class="para">· 本小程序<text class="hl">不</text>主动收集：微信 openid、手机号、位置、通讯录、相册、麦克风等敏感权限。</view>
+
+  <view class="section-title">二、我们如何使用信息</view>
+  <view class="para">1. 将你输入的困扰文本发送给第三方 AI 大模型服务商（如 DeepSeek、腾讯混元、字节豆包等）以生成骂醒文案；</view>
+  <view class="para">2. 将生成的文案渲染为分享卡片图片供你保存和分享；</view>
+  <view class="para">3. 用于故障排查、内容安全审计、服务质量优化；</view>
+  <view class="para">4. 用于统计使用情况（如日活、风格偏好占比），此类数据均为匿名聚合数据。</view>
+
+  <view class="section-title">三、信息的存储与保护</view>
+  <view class="para">1. <text class="hl">存储地点</text>：所有数据存储在腾讯云中国大陆节点，符合《中华人民共和国网络安全法》和《个人信息保护法》的规定。</view>
+  <view class="para">2. <text class="hl">存储时限</text>：你输入的困扰文本和 AI 生成内容，在服务器仅保留 30 天用于故障排查，30 天后自动删除。</view>
+  <view class="para">3. <text class="hl">安全措施</text>：我们采用 HTTPS 加密传输、访问权限控制、日志审计等业内通用手段保护你的信息。</view>
+
+  <view class="section-title">四、信息的第三方共享</view>
+  <view class="para">我们不会向任何第三方出售、出租或以其他形式变相共享你的个人信息，仅在以下必要情形下调用第三方服务：</view>
+  <view class="para">· <text class="tag">AI 服务商</text>：DeepSeek、腾讯混元、字节豆包等大模型提供商 —— 用于生成文案。你输入的文本会作为 API 请求内容发送给上述服务商，他们的隐私政策请参见各自官网。</view>
+  <view class="para">· <text class="tag">腾讯云</text>：微信云托管，用于承载后端服务。</view>
+  <view class="para">除法律法规要求或应政府部门/司法机关要求外，我们不会向其他第三方披露你的信息。</view>
+
+  <view class="section-title">五、你的权利</view>
+  <view class="para">你有权：</view>
+  <view class="para">· 拒绝提供信息（表现为不使用本小程序）；</view>
+  <view class="para">· 通过删除小程序停止我们对你信息的进一步收集；</view>
+  <view class="para">· 通过意见反馈通道要求我们删除已收集的相关数据（我们将在 15 个工作日内处理）。</view>
+
+  <view class="section-title">六、Cookie 与类似技术</view>
+  <view class="para">本小程序基于微信小程序框架运行，不使用 Cookie。微信本身可能会有相关技术，具体请参见《微信隐私保护指引》。</view>
+
+  <view class="section-title">七、未成年人保护</view>
+  <view class="para">本小程序主要面向 18 岁以上成年人。若你是未成年人，请在监护人的陪同下阅读本政策并在监护人的同意下使用本小程序。我们不会主动收集未成年人的个人信息。</view>
+
+  <view class="section-title">八、政策的修订</view>
+  <view class="para">我们可能会不定期修订本政策。修订后的政策将在本小程序内公示，重大变更还会通过显著方式提示你。</view>
+
+  <view class="section-title">九、联系我们</view>
+  <view class="para">如你对本政策有任何疑问或投诉，请通过小程序内"意见反馈"入口与我们联系，我们将在合理时间内回复。</view>
+
+  <view class="footer-tip">你的隐私 —— 是我们最基础的底线。</view>
+</view>

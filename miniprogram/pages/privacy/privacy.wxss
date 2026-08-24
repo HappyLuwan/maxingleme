@@ -1,0 +1,74 @@
+/* pages/privacy/privacy.wxss */
+.page {
+  min-height: 100vh;
+  padding: 40rpx 40rpx calc(60rpx + env(safe-area-inset-bottom));
+  background: 
+    radial-gradient(ellipse at top left, rgba(255, 71, 87, 0.1) 0%, transparent 50%),
+    #0a0a0a;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.doc-title {
+  font-size: 40rpx;
+  font-weight: 900;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 12rpx;
+  background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.doc-meta {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-bottom: 40rpx;
+  letter-spacing: 1rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #fff;
+  margin: 36rpx 0 16rpx;
+  padding-left: 20rpx;
+  border-left: 6rpx solid #ff4757;
+  line-height: 1.4;
+}
+
+.para {
+  font-size: 26rpx;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 12rpx;
+  letter-spacing: 0.5rpx;
+}
+
+.hl {
+  color: #ff8c3a;
+  font-weight: 700;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2rpx 12rpx;
+  margin-right: 6rpx;
+  background: rgba(255, 71, 87, 0.15);
+  border: 1rpx solid rgba(255, 71, 87, 0.3);
+  border-radius: 8rpx;
+  color: #ff8c3a;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+
+.footer-tip {
+  margin-top: 60rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 30rpx 0;
+  border-top: 1rpx dashed rgba(255, 255, 255, 0.1);
+}
