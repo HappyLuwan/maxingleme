@@ -36,7 +36,10 @@ async def lifespan(app: FastAPI):
     """应用启动/关闭生命周期"""
     logger.info("===== 骂醒了么 · Python 版启动 =====")
     logger.info("active=%s, fallback=%s", settings.ai_active_provider, settings.ai_fallback_provider)
-    pool.start()
+    # Playwright 初始化异步执行，避免阻塞 asyncio 事件循环 & 探针
+    # 即使 Playwright 初始化失败也不影响主服务启动（卡片功能降级）
+    import asyncio
+    asyncio.get_event_loop().run_in_executor(None, pool.start)
     yield
     logger.info("===== 骂醒了么 · 服务关闭 =====")
     pool.stop()
