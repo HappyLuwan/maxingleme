@@ -53,7 +53,7 @@
   <view class="action-wrap">
     <button class="g-btn action-btn"
             loading="{{loading}}"
-            disabled="{{loading || !userInput.trim()}}"
+            disabled="{{loading || !canSubmit}}"
             bindtap="onRoast">
       {{loading ? '正在骂醒你...' : '狠狠骂醒我 →'}}
     </button>

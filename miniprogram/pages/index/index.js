@@ -4,6 +4,7 @@ const api = require('../../utils/api')
 Page({
   data: {
     userInput: '',
+    canSubmit: false,
     styles: [],
     selectedStyle: 'dushe',
     loading: false,
@@ -44,7 +45,11 @@ Page({
    * 输入内容
    */
   onInput(e) {
-    this.setData({ userInput: e.detail.value })
+    const val = e.detail.value || ''
+    this.setData({
+      userInput: val,
+      canSubmit: val.trim().length > 0
+    })
   },
 
   /**
@@ -65,8 +70,11 @@ Page({
    * 示例点击自动填入
    */
   onExampleTap(e) {
-    const text = e.currentTarget.dataset.text
-    this.setData({ userInput: text })
+    const text = e.currentTarget.dataset.text || ''
+    this.setData({
+      userInput: text,
+      canSubmit: text.trim().length > 0
+    })
     wx.vibrateShort({ type: 'light' })
   },
 

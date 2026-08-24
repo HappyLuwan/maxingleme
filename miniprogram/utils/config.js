@@ -12,7 +12,7 @@ const config = {
   // 云托管环境 ID，在 mp 后台 → 云开发 → 环境 → 环境ID
   cloudEnv: 'prod-d6g8qda601a1eddc7',
   // 云托管服务名
-  cloudService: 'maxingleme-server',
+  cloudService: 'flask-ejik',
 
   // ===== 本地开发用（调试期直连 http://localhost:8080）=====
   // 走 wx.request 的场景（如 devtools 里勾了"不校验合法域名"）

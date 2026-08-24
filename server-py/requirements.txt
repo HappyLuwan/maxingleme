@@ -19,7 +19,10 @@ playwright==1.47.0
 
 # HTTP 客户端 & LLM 调用
 # OpenAI SDK 已成为事实标准协议：DeepSeek / 混元 / 豆包 / 通义千问 全部兼容
+# ⚠️ 必须锁定 httpx<0.28，openai 1.51.0 内部还在用旧的 proxies 参数，
+#    否则会抛 "Client.__init__() got an unexpected keyword argument 'proxies'"
 openai==1.51.0
+httpx==0.27.2
 
 # YAML 配置解析
 PyYAML==6.0.2
