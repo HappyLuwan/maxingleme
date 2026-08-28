@@ -4,11 +4,11 @@
   <view class="doc-meta">更新日期：{{updatedAt}}｜生效日期：{{updatedAt}}</view>
 
   <view class="section-title">引言</view>
-  <view class="para">我们（「骂醒了么」小程序开发者）深知个人信息对你的重要性，并会尽全力保护你的隐私。本小程序基于预置的人工创作文案库提供服务，<text class="hl">不使用任何生成式 AI / 深度合成技术</text>。请你在使用本小程序前仔细阅读本政策，充分理解各条款内容后再开始使用。</view>
+  <view class="para">我们（「骂醒了么」小程序开发者）深知个人信息对你的重要性，并会尽全力保护你的隐私。本小程序基于预置的人工创作文案库提供服务，<text class="hl">全部文案均由开发者人工撰写，不涉及深度合成、算法生成类技术</text>。请你在使用本小程序前仔细阅读本政策，充分理解各条款内容后再开始使用。</view>
 
   <view class="section-title">一、我们收集的信息</view>
   <view class="para"><text class="hl">1. 你主动提供的信息：</text></view>
-  <view class="para">· <text class="tag">困扰文本</text>：你在输入框中输入的困扰、烦恼等文本内容，仅用于与本小程序预置的人工创作文案库进行关键词匹配，不会发送给任何第三方 AI 服务商。</view>
+  <view class="para">· <text class="tag">困扰文本</text>：你在输入框中输入的困扰、烦恼等文本内容，仅用于与本小程序预置的人工创作文案库进行关键词匹配，不会发送给任何第三方文本生成/深度合成服务商。</view>
   <view class="para">· <text class="tag">风格偏好</text>：你选择的骂醒风格（如温柔姐姐、鲁迅式等）。</view>
   <view class="para">· <text class="tag">收藏操作</text>：当你收藏某条骂醒文案时，我们会将其与你的账号关联，方便你在"我的"页面查看。</view>
 

@@ -370,7 +370,7 @@ async function loadDetail() {
       <div class="row"><div class="k">用户（脱敏）</div><div class="v">${d.openidMasked}</div></div>
       <div class="row"><div class="k">时间 / 风格 / Provider</div><div class="v">${formatTime(d.createdAt)} · ${d.style.emoji} ${d.style.name} · ${d.provider || '-'}</div></div>
       <div class="row"><div class="k">用户输入</div><div class="v">${escapeHtml(d.userInput || '(空)')}</div></div>
-      <div class="row"><div class="k">AI 回复</div><div class="v">${escapeHtml(d.content || '(空)')}</div></div>
+              <div class="row"><div class="k">骂醒文案</div><div class="v">${escapeHtml(d.content || '(空)')}</div></div>
       <div class="row"><div class="k">被收藏次数</div><div class="v">${d.favoriteCount}</div></div>
       ${d.isFullMode ? '<div class="row" style="color:#d32f2f;font-size:12px">⚠️ 当前显示完整内容（仍打码手机号/身份证等敏感数字）</div>' : ''}
     `;
