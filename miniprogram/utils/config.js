@@ -30,7 +30,7 @@ const config = {
   // ===== 🔥 唯一开关：切换本地/云托管 =====
   // false = 走 wx.request 请求 apiBaseUrl（本地）
   // true  = 走 wx.cloud.callContainer 请求云托管服务
-  useCloudContainer: false,
+  useCloudContainer: true,
 
   // 请求超时（毫秒）
   requestTimeout: 30000
