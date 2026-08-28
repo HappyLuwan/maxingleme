@@ -4,7 +4,7 @@
   <view class="brand">
     <view class="logo-fire">🔥</view>
     <view class="brand-name">骂醒了么</view>
-    <view class="brand-slogan">AI 一句话骂醒你 · 治愈自我感动</view>
+    <view class="brand-slogan">金句一句骂醒你 · 治愈自我感动</view>
     <view class="version">v{{version}}</view>
   </view>
 
@@ -13,7 +13,7 @@
     <view class="card-title">服务信息</view>
     <view class="row">
       <text class="row-label">服务性质</text>
-      <text class="row-value">娱乐性 AI 文本生成工具</text>
+      <text class="row-value">娱乐性文本小工具</text>
     </view>
     <view class="row">
       <text class="row-label">主体</text>
@@ -32,7 +32,7 @@
   <!-- 用户须知 -->
   <view class="card notice-card">
     <view class="card-title">⚠️ 使用须知</view>
-    <view class="notice-text">本小程序所有内容均由 AI 生成，仅供娱乐参考，不构成任何专业心理咨询、医疗、法律或投资建议。</view>
+    <view class="notice-text">本小程序所有文案均为人工创作，仅供娱乐参考，不构成任何专业心理咨询、医疗、法律或投资建议。</view>
     <view class="notice-text">若你正处于严重情绪困扰，请拨打全国心理援助热线 <text class="hotline" bindtap="onCopy" data-text="400-161-9995">400-161-9995</text>。</view>
   </view>
 

@@ -4,11 +4,11 @@
   <view class="doc-meta">更新日期：{{updatedAt}}｜生效日期：{{updatedAt}}</view>
 
   <view class="section-title">引言</view>
-  <view class="para">我们（「骂醒了么」小程序开发者）深知个人信息对你的重要性，并会尽全力保护你的隐私。请你在使用本小程序前仔细阅读本政策，充分理解各条款内容后再开始使用。</view>
+  <view class="para">我们（「骂醒了么」小程序开发者）深知个人信息对你的重要性，并会尽全力保护你的隐私。本小程序基于预置的人工创作文案库提供服务，<text class="hl">不使用任何生成式 AI / 深度合成技术</text>。请你在使用本小程序前仔细阅读本政策，充分理解各条款内容后再开始使用。</view>
 
   <view class="section-title">一、我们收集的信息</view>
   <view class="para"><text class="hl">1. 你主动提供的信息：</text></view>
-  <view class="para">· <text class="tag">困扰文本</text>：你在输入框中输入的困扰、烦恼等文本内容，用于调用 AI 生成骂醒文案。</view>
+  <view class="para">· <text class="tag">困扰文本</text>：你在输入框中输入的困扰、烦恼等文本内容，仅用于与本小程序预置的人工创作文案库进行关键词匹配，不会发送给任何第三方 AI 服务商。</view>
   <view class="para">· <text class="tag">风格偏好</text>：你选择的骂醒风格（如温柔姐姐、鲁迅式等）。</view>
   <view class="para">· <text class="tag">收藏操作</text>：当你收藏某条骂醒文案时，我们会将其与你的账号关联，方便你在"我的"页面查看。</view>
 
@@ -19,12 +19,12 @@
   <view class="para">· 本小程序<text class="hl">不</text>收集：手机号、位置、通讯录、相册、麦克风、摄像头等敏感权限。</view>
 
   <view class="para"><text class="hl">3. 设备权限说明：</text></view>
-  <view class="para">· <text class="tag">保存到相册</text>：仅在你主动点击"保存卡片"时调用，将 AI 生成的卡片图片写入你的手机相册，供你离线查看或分享。</view>
+  <view class="para">· <text class="tag">保存到相册</text>：仅在你主动点击"保存卡片"时调用，将骂醒卡片图片写入你的手机相册，供你离线查看或分享。</view>
   <view class="para">· <text class="tag">写入剪贴板</text>：仅在你主动点击"关于"页的备案号、心理援助热线号码时调用，用于将上述公开信息复制到你的剪贴板，方便你在其他应用（如浏览器、拨号盘）中粘贴使用。本小程序<text class="hl">不会读取</text>你的剪贴板内容。</view>
 
   <view class="section-title">二、我们如何使用信息</view>
-  <view class="para">1. 将你输入的困扰文本发送给第三方 AI 大模型服务商（如 DeepSeek、腾讯混元等）以生成骂醒文案；</view>
-  <view class="para">2. 将生成的文案渲染为分享卡片图片供你保存和分享；</view>
+  <view class="para">1. 将你输入的困扰文本与本小程序内预置的人工创作文案库进行关键词匹配，为你返回相关醒神文案；</view>
+  <view class="para">2. 将匹配到的文案渲染为分享卡片图片供你保存和分享；</view>
   <view class="para">3. 为你提供历史回顾、收藏管理和每日 20 次的使用配额；</view>
   <view class="para">4. 用于故障排查、内容安全审计、服务质量优化；</view>
   <view class="para">5. 用于统计使用情况（如日活、风格偏好占比），此类数据均为匿名聚合数据。</view>
@@ -32,7 +32,7 @@
   <view class="section-title">三、信息的存储与保护</view>
   <view class="para">1. <text class="hl">存储地点</text>：所有数据存储在腾讯云中国大陆节点（微信云托管 + 云数据库），符合《中华人民共和国网络安全法》和《个人信息保护法》的规定。</view>
   <view class="para">2. <text class="hl">存储时限</text>：</view>
-  <view class="para">　· 你输入的困扰文本和 AI 回复：保留 <text class="hl">90 天</text>，到期自动删除；</view>
+  <view class="para">　· 你输入的困扰文本和返回的骂醒文案：保留 <text class="hl">90 天</text>，到期自动删除；</view>
   <view class="para">　· 单个账号历史条数超过 500 条时，最老的未收藏记录会自动清理；</view>
   <view class="para">　· 你主动收藏的内容会长期保留，直至你手动取消收藏或删除；</view>
   <view class="para">　· 你可以随时在"我的"页面长按记录直接删除。</view>
@@ -41,7 +41,6 @@
 
   <view class="section-title">四、信息的第三方共享</view>
   <view class="para">我们不会向任何第三方出售、出租或以其他形式变相共享你的个人信息，仅在以下必要情形下调用第三方服务：</view>
-  <view class="para">· <text class="tag">AI 服务商</text>：DeepSeek、腾讯混元等大模型提供商 —— 用于生成文案。你输入的文本会作为 API 请求内容发送给上述服务商，他们的隐私政策请参见各自官网。</view>
   <view class="para">· <text class="tag">腾讯云 · 微信云托管</text>：用于承载后端服务和数据存储。</view>
   <view class="para">· <text class="tag">微信内容安全</text>：调用微信官方 msgSecCheck 接口对内容进行合规审核，你的输入文本会传给微信官方接口。</view>
   <view class="para">除法律法规要求或应政府部门/司法机关要求外，我们不会向其他第三方披露你的信息。</view>

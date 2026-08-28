@@ -199,7 +199,7 @@ YIJU_PROMPT = Prompt(
 
 
 # ---------- 注册中心 ----------
-# 注意：CUSTOM 风格不需要 Prompt（不调用 AI，直接原样返回用户输入）
+# 注意：CUSTOM 风格不需要 Prompt（不匹配文案库，直接原样返回用户输入）
 _REGISTRY: Dict[RoastStyle, Prompt] = {
     RoastStyle.YIJU: YIJU_PROMPT,
     RoastStyle.YINYANG: YINYANG_PROMPT,

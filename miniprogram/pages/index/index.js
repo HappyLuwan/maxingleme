@@ -129,7 +129,7 @@ Page({
    */
   onShareAppMessage() {
     return {
-      title: '🔥 骂醒了么 - 让 AI 一句话骂醒你',
+      title: '🔥 骂醒了么 - 金句一句骂醒你',
       path: '/pages/index/index',
       imageUrl: '' // 可放分享封面图
     }
@@ -137,7 +137,7 @@ Page({
 
   onShareTimeline() {
     return {
-      title: '🔥 骂醒了么 - 你的 AI 嘴替',
+      title: '🔥 骂醒了么 - 你的贴心骂醒小胶囊',
       query: ''
     }
   },

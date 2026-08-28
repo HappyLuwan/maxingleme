@@ -91,12 +91,12 @@ class RoastResponseDTO(BaseModel):
 
 # ---------- Service ----------
 def roast(request: RoastRequestDTO, openid: str) -> RoastResponseDTO:
-    """一键骂醒：限流 → 参数校验 → 敏感词过滤 → 调用 AI → 保存记录 → 返回"""
+    """一键骂醒：限流 → 参数校验 → 敏感词过滤 → 匹配文案库 → 保存记录 → 返回"""
     user_input = (request.user_input or "").strip()
     if not user_input:
         raise BusinessException(ErrorCode.CONTENT_EMPTY, "说点啥呀，别憋着")
 
-    # 每日限流：dev-anon 与实际用户都受限，避免调试期烧 AI 额度
+    # 每日限流：dev-anon 与实际用户都受限，防止滥用
     # 注意：先读后写，读时不占额，命中限流时不 +1
     used = repo.get_daily_count(openid)
     if used >= DAILY_ROAST_LIMIT:
@@ -146,18 +146,19 @@ def roast(request: RoastRequestDTO, openid: str) -> RoastResponseDTO:
 
     prompt = get_prompt(style)
 
-    # 调用 AI
+    # 调用本地文案库（人工创作 + 关键词匹配）
     chat_req = ChatRequest(
         system_prompt=prompt.system_prompt,
         user_input=user_input,
         temperature=prompt.temperature,
         max_tokens=prompt.max_tokens,
+        style_key=style.key,
     )
     chat_resp = ai_router.chat(chat_req)
     if not chat_resp.content:
-        raise BusinessException(ErrorCode.AI_RESPONSE_INVALID, "AI 返回内容为空")
+        raise BusinessException(ErrorCode.AI_RESPONSE_INVALID, "文案库返回内容为空")
 
-    # 智能截断：AI 溢出时兜底，保证页面文案区和卡片图都不会视觉爆炸
+    # 智能截断：兵底，保证页面文案区和卡片图都不会视觉爆炸
     raw_len = len(chat_resp.content)
     final_content = _smart_truncate(chat_resp.content)
     if len(final_content) != raw_len:

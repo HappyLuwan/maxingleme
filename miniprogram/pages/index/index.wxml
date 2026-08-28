@@ -43,7 +43,7 @@
             bindtap="onSelectStyle">
         <view class="style-emoji">{{item.emoji}}</view>
         <view class="style-name">{{item.name}}</view>
-        <view wx:if="{{item.key === 'custom'}}" class="style-badge style-badge-custom">不调用AI</view>
+        <view wx:if="{{item.key === 'custom'}}" class="style-badge style-badge-custom">自由输入</view>
         <view wx:if="{{!item.enabled}}" class="soon-tag">敬请期待</view>
       </view>
     </view>
@@ -57,7 +57,7 @@
       {{loading ? loadingTip : '狠狠骂醒我 →'}}
     </button>
     <view class="disclaimer">
-      ⚠️ 内容由 AI 生成，不构成任何专业建议，危险情况请寻求救助
+      ⚠️ 文案均为人工创作，仅供娱乐，危险情况请寻求救助
     </view>
   </view>
 

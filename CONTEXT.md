@@ -7,7 +7,9 @@
 
 ## 一、项目一句话概述
 
-**「骂醒了么」** 是一款情绪价值向的微信小程序 —— 用户输入困扰，AI 生成不同风格的"骂醒"文案，一键生成分享卡片传播裂变。
+**「骂醒了么」** 是一款情绪价值向的微信小程序 —— 用户输入困扰，后端从预置的人工创作文案库（10 个主题标签，5 风格 × 60 条 = 300 条金句）中匹配最贴合的一条返回，一键生成分享卡片传播裂变。
+
+> ⚠️ **重要声明**：本项目仅使用本地预置文案库，**不使用任何生成式 AI / 深度合成技术**（因个人主体尚未开放此类目）。若未来主体升级，可循 `LocalProvider` 抽象层低成本切回 AI 模式。
 
 ---
 
@@ -17,7 +19,7 @@
 |---|---|
 | 前端 | 微信小程序原生（无框架） |
 | 后端 | **Python 3.12 + FastAPI + Playwright + Jinja2**（Java 版已删除） |
-| AI | OpenAI SDK 兼容层，默认 DeepSeek，可切换混元/豆包/通义/Mock |
+| 文案引擎 | 本地精选文案库（300 条） + 关键词标签匹配，**不使用任何外部生成式服务** |
 | 部署 | 微信云托管 CloudBase Run（走 `wx.cloud.callContainer`，不走 `wx.request`） |
 | 卡片渲染 | Playwright 无头 Chromium 截图 |
 
@@ -90,7 +92,7 @@ wechat-demo/
 
 ### 4.1 骂醒风格（6 种，权威源：`server-py/app/enums.py`）
 
-| Key | 名称 | Emoji | 定位 | 是否调用 AI |
+| Key | 名称 | Emoji | 定位 | 是否匹配文案库 |
 |---|---|---|---|---|
 | `yiju` | 一针见血 | 💥 | 一句话暴击，推荐分享 | ✅ |
 | `yinyang` | 阴阳怪气 | 😏 | 阴阳怪气小天才 | ✅ |
@@ -151,7 +153,7 @@ wechat-demo/
 | 📊 概览 | 总用户 / 总骂醒 / 今日骂醒 / 总收藏 / 今日新增用户 + 当前 Provider | `GET /admin/overview` |
 | 🎴 卡片数据 | 各模板生成/保存/分享数、保存率、分享率 | `GET /admin/card/stats?days=N` |
 | 💬 用户吐槽 | 分页列表（脱敏视图），按时间/风格/仅收藏筛选，点"详情"看单条 | `GET /admin/records` · `GET /admin/records/{id}?full=0/1` |
-| ⚙️ Provider | AI 模型切换（主力 / 兜底） | `GET/POST /admin/ai/*` |
+| ⚙️ Provider | 文案库 provider 状态 | `GET /admin/ai/providers` |
 
 **脱敏原则**（`mask.py`）：
 - openid：`test-user-1-abc123def456` → `test****f456`
@@ -184,7 +186,7 @@ wechat-demo/
 - **本地调试**：`config.js` 里 `useCloudContainer: false`，走 `apiBaseUrl: http://localhost:8080` + 开发者工具"不校验合法域名"。
 
 ### 5.5 自定义风格短路
-- `style=custom` 时，`roast.py` 跳过 AI，直接把 `userInput` 作为 `content` 返回，`provider=custom`, `cost_millis=0`。
+- `style=custom` 时，`roast.py` 跳过文案匹配，直接把 `userInput` 作为 `content` 返回，`provider=custom`, `cost_millis=0`。
 
 ### 5.6 统一响应格式
 - `Result { code, message, data }`，HTTP 状态永远 200，业务成败通过 `code` 区分（0 = 成功）。
@@ -220,7 +222,7 @@ wechat-demo/
 - ✅ **用户协议**：`pages/agreement/`
 - ✅ **隐私政策**：`pages/privacy/`（符合《个保法》《生成式 AI 服务管理暂行办法》，2026-08-28 更新，明示 openid 收集、90 天保留期、运营访问脱敏原则）
 - ✅ **免责声明**（首页 + 结果页底部统一文案）：
-  > ⚠️ 内容由 AI 生成，不构成任何专业建议，危险情况请寻求救助
+> ⚠️ 文案均为人工创作，仅供娱乐，危险情况请寻求救助
 - ✅ **关于页**（`pages/about/`）：备案号占位 `ICP备xxxxxxxx号-xX`、意见反馈入口、心理援助热线复制。
 - ✅ **App 首次进入弹窗**：引导阅读用户协议 + 隐私政策，同意后本地缓存版本号（`app.js` PRIVACY_VERSION，隐私政策实质变更时递增以触发重新同意）。
 - ✅ **REVIEW_GUIDE.md**：审核话术（类目建议"工具-效率"、服务描述学术化包装、拒审申诉模板）。
@@ -248,8 +250,8 @@ cd server-py
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python -m playwright install chromium
-cp .env.example .env  # 填 DEEPSEEK_API_KEY
-uvicorn main:app --reload --port 8080
+cp .env.example .env  # 默认值已可直接跑
+源 .env && uvicorn main:app --reload --port 8080
 ```
 
 ### 后端部署到云托管

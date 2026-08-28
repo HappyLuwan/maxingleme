@@ -1,5 +1,7 @@
 """
-应用配置：AI Provider 配置、卡片配置、管理员配置等
+应用配置：卡片配置、管理员配置、内容安全等
+========================================
+本小程序仅使用本地精选文案库提供服务，不涉及任何外部生成式服务。
 """
 from __future__ import annotations
 
@@ -11,13 +13,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ProviderConfig(BaseModel):
-    """单个 AI Provider 配置"""
+    """兼容占位（历史签名），本地文案库不需要此配置"""
     enabled: bool = True
-    api_url: str = ""
-    api_key: str = ""
-    model: str = ""
-    temperature: float = 1.0
-    max_tokens: int = 500
 
 
 class Settings(BaseSettings):
@@ -33,46 +30,11 @@ class Settings(BaseSettings):
     port: int = Field(default=8080, alias="PORT")
     host: str = "0.0.0.0"
 
-    # ---------- AI ----------
-    ai_active_provider: str = Field(default="deepseek", alias="AI_ACTIVE_PROVIDER")
-    ai_fallback_provider: str = Field(default="hunyuan", alias="AI_FALLBACK_PROVIDER")
+    # ---------- 文案生成 ----------
+    # 唯一 provider：local（本地精选文案库，人工创作）
+    ai_active_provider: str = Field(default="local", alias="AI_ACTIVE_PROVIDER")
+    ai_fallback_provider: str = Field(default="local", alias="AI_FALLBACK_PROVIDER")
     ai_timeout_seconds: int = 30
-
-    # DeepSeek
-    deepseek_api_url: str = Field(
-        default="https://api.deepseek.com/v1",
-        alias="DEEPSEEK_API_URL",
-    )
-    deepseek_api_key: str = Field(default="", alias="DEEPSEEK_API_KEY")
-    deepseek_model: str = Field(default="deepseek-chat", alias="DEEPSEEK_MODEL")
-    deepseek_enabled: bool = Field(default=True, alias="DEEPSEEK_ENABLED")
-
-    # 混元
-    hunyuan_api_url: str = Field(
-        default="https://api.hunyuan.cloud.tencent.com/v1",
-        alias="HUNYUAN_API_URL",
-    )
-    hunyuan_api_key: str = Field(default="", alias="HUNYUAN_API_KEY")
-    hunyuan_model: str = Field(default="hunyuan-lite", alias="HUNYUAN_MODEL")
-    hunyuan_enabled: bool = Field(default=True, alias="HUNYUAN_ENABLED")
-
-    # 豆包
-    doubao_api_url: str = Field(
-        default="https://ark.cn-beijing.volces.com/api/v3",
-        alias="DOUBAO_API_URL",
-    )
-    doubao_api_key: str = Field(default="", alias="DOUBAO_API_KEY")
-    doubao_model: str = Field(default="doubao-lite-4k", alias="DOUBAO_MODEL")
-    doubao_enabled: bool = Field(default=False, alias="DOUBAO_ENABLED")
-
-    # 通义千问
-    qwen_api_url: str = Field(
-        default="https://dashscope.aliyuncs.com/compatible-mode/v1",
-        alias="QWEN_API_URL",
-    )
-    qwen_api_key: str = Field(default="", alias="QWEN_API_KEY")
-    qwen_model: str = Field(default="qwen-turbo", alias="QWEN_MODEL")
-    qwen_enabled: bool = Field(default=False, alias="QWEN_ENABLED")
 
     # ---------- 卡片 ----------
     card_output_dir: str = Field(default="/tmp/mxlm-cards", alias="CARD_OUTPUT_DIR")
@@ -93,42 +55,10 @@ class Settings(BaseSettings):
     )
 
     def provider_config(self, key: str) -> Optional[ProviderConfig]:
-        """按 provider key 获取配置对象"""
-        mapping = {
-            "deepseek": ProviderConfig(
-                enabled=self.deepseek_enabled,
-                api_url=self.deepseek_api_url,
-                api_key=self.deepseek_api_key,
-                model=self.deepseek_model,
-                temperature=1.0,
-                max_tokens=500,
-            ),
-            "hunyuan": ProviderConfig(
-                enabled=self.hunyuan_enabled,
-                api_url=self.hunyuan_api_url,
-                api_key=self.hunyuan_api_key,
-                model=self.hunyuan_model,
-                temperature=1.0,
-                max_tokens=500,
-            ),
-            "doubao": ProviderConfig(
-                enabled=self.doubao_enabled,
-                api_url=self.doubao_api_url,
-                api_key=self.doubao_api_key,
-                model=self.doubao_model,
-                temperature=1.0,
-                max_tokens=500,
-            ),
-            "qwen": ProviderConfig(
-                enabled=self.qwen_enabled,
-                api_url=self.qwen_api_url,
-                api_key=self.qwen_api_key,
-                model=self.qwen_model,
-                temperature=1.0,
-                max_tokens=500,
-            ),
-        }
-        return mapping.get(key)
+        """兼容旧接口，本地文案库不需要配置对象"""
+        if key == "local":
+            return ProviderConfig(enabled=True)
+        return None
 
 
 # ---------- 全局单例 ----------
@@ -137,8 +67,7 @@ settings = Settings()
 
 class RuntimeConfig:
     """
-    运行时可变配置：当前启用的 provider
-    对应 Java 的 AIRuntimeConfig（通过后台接口一键切换）
+    运行时配置：当前 provider（保留字段以兼容旧代码，实际永远是 local）
     """
 
     def __init__(self, active: str, fallback: str) -> None:
@@ -154,13 +83,18 @@ class RuntimeConfig:
         return self._fallback
 
     def switch_active(self, key: str) -> None:
+        # 只允许切到 local
+        if key != "local":
+            return
         self._active = key
 
     def switch_fallback(self, key: str) -> None:
+        if key != "local":
+            return
         self._fallback = key
 
 
 runtime = RuntimeConfig(
-    active=settings.ai_active_provider,
-    fallback=settings.ai_fallback_provider,
+    active="local",
+    fallback="local",
 )

@@ -11,7 +11,7 @@
     </view>
   </view>
 
-  <!-- 主内容：AI 骂醒文案 -->
+  <!-- 主内容：骂醒文案 -->
   <view class="content-box">
     <view class="quote-mark">"</view>
     <view class="content-text">{{roast.content}}</view>
@@ -69,7 +69,7 @@
     </view>
 
     <view class="disclaimer">
-      ⚠️ 内容由 AI 生成，不构成任何专业建议，危险情况请寻求救助
+      ⚠️ 文案均为人工创作，仅供娱乐，危险情况请寻求救助
     </view>
   </view>
 </view>

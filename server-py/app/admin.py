@@ -1,7 +1,5 @@
 """
-后台管理接口：AI 一键切换 + Provider 测试 + 概览 + 用户吐槽查询
-对应 Java 的 AdminController
-
+后台管理接口：Provider 状态 + 概览 + 用户吐槽查询
 鉴权：请求头 X-Admin-Token 必须与 ADMIN_TOKEN 一致
 """
 from __future__ import annotations
@@ -13,6 +11,7 @@ from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from app.ai.base import ChatRequest
+from app.ai.local_provider import get_library_stats
 from app.ai.router import router as ai_router
 from app.common import BusinessException, ErrorCode, Result
 from app.config import runtime, settings
@@ -22,7 +21,7 @@ from app.repository import repo
 
 router = APIRouter(prefix="/admin/ai", tags=["admin"])
 
-# ---------- AI Provider 管理（原有） ----------
+# ---------- Provider 管理 ----------
 
 
 def _check_auth(token: Optional[str]) -> None:
@@ -47,6 +46,7 @@ def list_providers(x_admin_token: Optional[str] = Header(default=None, alias="X-
     _check_auth(x_admin_token)
     active = runtime.active
     fallback = runtime.fallback
+    stats = get_library_stats()
     data = [
         {
             "key": p.key,
@@ -54,6 +54,8 @@ def list_providers(x_admin_token: Optional[str] = Header(default=None, alias="X-
             "available": p.is_available(),
             "isActive": p.key == active,
             "isFallback": p.key == fallback,
+            "libraryTotal": stats["total"],
+            "libraryByStyle": stats["byStyle"],
         }
         for p in ai_router.list_providers()
     ]
@@ -95,7 +97,7 @@ def test_provider(
 ):
     _check_auth(x_admin_token)
     chat_req = ChatRequest(
-        system_prompt=dto.system_prompt or "你是一个测试用的 AI 助手，请用一句话回复。",
+        system_prompt=dto.system_prompt or "测试提示：请用一句话回复。",
         user_input=dto.user_input or "Hello",
     )
     resp = ai_router.chat_with(dto.provider_key, chat_req)
@@ -122,7 +124,7 @@ def admin_overview(
     """概览：总用户/总骂醒/今日骂醒/总收藏/今日新增用户"""
     _check_auth(x_admin_token)
     data = repo.overview()
-    # 附带 AI provider 运行时信息，页面能一眼看到当前使用哪个模型
+    # 附带 provider 运行时信息，页面能一眼看到当前使用哪个文案库
     data["activeProvider"] = runtime.active
     data["fallbackProvider"] = runtime.fallback
     return Result.success(data)
