@@ -8,41 +8,46 @@
 
 ## ✨ 核心特色
 
-- 🎭 **多风格人格**：毒舌暴击 / 东北大姐 / 温柔姐姐 三大主力风格（可扩展）
-- 🎨 **精美分享卡片**：3 套精心设计的卡片模板，自带传播力
+- 🎭 **6 种骂醒风格**：一针见血 / 阴阳怪气 / 温柔姐姐 / 鲁迅式 / 哲学家 / 自定义
+- 🎨 **3 套分享卡片**：金句海报 / 聊天截图 / 海报文艺，自带传播力
 - 🤖 **AI 模型可切换**：默认 DeepSeek，支持混元、豆包、通义千问，后台一键切换 + 自动兜底
-- 🛡️ **内容安全**：本地敏感词过滤 + 微信内容安全 API（V2）
-- ⚡ **零推广自然流量**：小程序名占词 + 分享卡片裂变
+- 🛡️ **内容安全**：本地敏感词过滤 + 微信内容安全 API + 心理危机词汇引导
+- ⚡ **一键分享**：小程序名占词 + 分享卡片裂变
 
 ## 🏗️ 技术架构
 
-前端（微信小程序原生）+ 后端（Spring Boot 3 + **LangChain4j** + Playwright + Thymeleaf）+ 多 AI Provider 策略模式切换。
+前端（微信小程序原生）+ 后端（**Python 3.12 + FastAPI + Playwright + Jinja2**）+ 多 AI Provider 策略模式切换。
 
-> AI 调用层基于 [LangChain4j](https://github.com/langchain4j/langchain4j)（Java 版 LangChain），通过统一的 `ChatLanguageModel` 抽象接入所有 OpenAI 兼容的国产大模型（DeepSeek / 混元 / 豆包 / 通义千问），内置重试、超时、Token 统计。为未来扩展 memory / RAG / tools 打好基础。
+AI 调用层通过统一的 OpenAI 兼容抽象接入所有国产大模型（DeepSeek / 混元 / 豆包 / 通义千问），内置重试、超时、Token 统计与自动兜底。
 
 ## 📂 目录结构
 
 ```
 wechat-demo/
-├── server/                # Java Spring Boot 后端
-│   ├── src/main/java/com/mxlm/
-│   │   ├── ai/            # AI Provider 架构（策略模式）
-│   │   ├── prompt/        # 3 套人格 Prompt
-│   │   ├── roast/         # 骂醒核心业务
-│   │   ├── card/          # 卡片生成 (Playwright)
-│   │   ├── security/      # 内容安全
-│   │   ├── admin/         # 后台管理
-│   │   └── common/        # 通用组件
-│   ├── src/main/resources/
-│   │   ├── templates/     # 3 套 HTML 卡片模板
-│   │   ├── static/        # 后台管理页
-│   │   └── application*.yml
+├── server-py/                 # Python FastAPI 后端
+│   ├── app/
+│   │   ├── ai/                # AI Provider 架构（策略模式）
+│   │   ├── prompts.py         # 6 种风格的 Prompt 模板
+│   │   ├── roast.py           # 骂醒核心业务
+│   │   ├── card.py            # 卡片生成 (Playwright)
+│   │   ├── security.py        # 内容安全
+│   │   ├── admin.py           # 后台管理
+│   │   ├── enums.py           # 风格/模板枚举
+│   │   ├── config.py          # 配置
+│   │   ├── common.py          # 通用响应/异常
+│   │   └── repository.py      # 骂醒记录存储
+│   ├── templates/             # 3 套 HTML 卡片模板
+│   ├── main.py                # FastAPI 入口
+│   ├── requirements.txt
 │   ├── Dockerfile
 │   └── cloudbaserun.yaml
-├── miniprogram/           # 微信小程序前端
-│   ├── pages/index/       # 首页（输入 + 风格选择）
-│   ├── pages/result/      # 结果页（展示 + 卡片 + 分享）
-│   └── utils/             # API 封装 + 配置
+├── miniprogram/               # 微信小程序前端
+│   ├── pages/index/           # 首页（输入 + 风格选择）
+│   ├── pages/result/          # 结果页（展示 + 卡片 + 分享）
+│   ├── pages/about|agreement|privacy/  # 关于/协议/隐私
+│   └── utils/                 # API 封装 + 配置
+├── DEPLOY.md                  # 部署说明
+├── REVIEW_GUIDE.md            # 小程序审核指南
 └── README.md
 ```
 
@@ -51,23 +56,30 @@ wechat-demo/
 ### 后端启动（本地开发）
 
 ```bash
-cd server
+cd server-py
 
-# 首次运行：安装 Playwright 浏览器（下载 Chromium，约 200MB）
-mvn exec:java -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install chromium"
+# 建议 Python 3.12
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
 
-# 启动服务（默认 local profile：Mock AI + H2 内存库，无需任何 API Key）
-mvn spring-boot:run
+# 首次运行：安装 Playwright 浏览器（Chromium，约 200MB）
+python -m playwright install chromium
+
+# 复制并配置环境变量
+cp .env.example .env
+
+# 启动服务（默认无 API Key 时走 Mock）
+uvicorn main:app --reload --port 8080
 ```
 
 访问：
 - 后台管理页：http://localhost:8080/admin.html （默认 Token：`mxlm-admin-2026`）
-- 健康检查：http://localhost:8080/actuator/health
+- 健康检查：http://localhost:8080/health
 - 骂醒 API：`POST http://localhost:8080/api/roast`
 
 ### 切换到真实 AI
 
-1. 设置环境变量：`export DEEPSEEK_API_KEY=sk-xxx`
+1. 在 `.env` 中配置：`DEEPSEEK_API_KEY=sk-xxx`
 2. 通过后台管理页把 provider 从 `mock` 切换到 `deepseek`
 
 ### 小程序前端启动
@@ -94,13 +106,27 @@ mvn spring-boot:run
 
 > 后台接口需在 Header 携带 `X-Admin-Token`
 
+## 🎭 骂醒风格
+
+| 风格 | Key | 定位 |
+|-----|-----|------|
+| 一针见血 | `yiju` | 一句话暴击，推荐分享传播 |
+| 阴阳怪气 | `yinyang` | 阴阳怪气小天才，让你无从反驳 |
+| 温柔姐姐 | `wenrou` | 温柔知性，直击心底最柔软处 |
+| 鲁迅式 | `luxun` | 深刻犀利，字字诛心 |
+| 哲学家 | `zhexue` | 从哲学高度让你顿悟 |
+| 自定义 | `custom` | 用户自己输入文案，直接生成卡片（不调用 AI） |
+
 ## 🎨 卡片模板
 
-| 模板 | Key | 场景 | 特点 |
-|-----|-----|------|-----|
-| 聊天截图风 | `chat` | 传播王者 | 模仿微信聊天，一眼理解 |
-| 暴击语录风 | `attack` | 情绪冲击 | 黑红渐变，大字号引言 |
-| 海报文艺风 | `poster` | 文青必选 | 纸质背景，古典排版 |
+**9 套正式款**（按吸引力排序，结果页横向滚动展示）：
+
+`tarot` 🔮 → `rx` 💊 → `wrapped` 🎯 → `checkin` 📊 → `track` 💿 → `news` 📰 → `chat` 💬 → `comment` 🌙 → `note` 🗒
+
+- **首屏默认**：`tarot`（塔罗指引，视觉冲击最强）
+- **万能兜底**：`chat`（后端 `get_card_template()` 找不到 key 时默认返回）
+
+**已删除**：`punch`（金句海报）、`poster`（语录海报）。
 
 ## 🤖 AI Provider 切换
 
@@ -114,21 +140,6 @@ curl -X POST http://localhost:8080/admin/ai/switch \
   -H "X-Admin-Token: mxlm-admin-2026" \
   -d '{"providerKey": "hunyuan"}'
 ```
-
-## 📝 开发进度
-
-- [x] AI Provider 可切换架构（DeepSeek/混元/豆包/通义/Mock）
-- [x] 3 套风格 Prompt（毒舌 / 东北 / 温柔）
-- [x] 骂醒核心接口 + 内容安全 + 心理危机词汇引导
-- [x] 3 套精美卡片模板 + Playwright 生成
-- [x] 后台管理页 + 一键切换
-- [x] 小程序前端（首页 + 结果页 + 分享）
-- [x] Dockerfile + 云托管配置
-- [ ] 微信登录 + openid 用户体系
-- [ ] 云开发数据库持久化（历史记录、榜单）
-- [ ] 微信内容安全 API 接入
-- [ ] 更多风格（鲁迅 / 哲学家 / 阴阳怪气）
-- [ ] 广告变现
 
 ## 📄 License
 

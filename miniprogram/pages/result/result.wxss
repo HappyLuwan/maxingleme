@@ -11,7 +11,15 @@
   box-sizing: border-box;
 }
 
-/* ==== 风格标签 ==== */
+/* ==== 风格标签 + 收藏按钮 ==== */
+.style-tag-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  margin-bottom: 2.5vh;
+}
+
 .style-tag {
   display: inline-flex;
   align-items: center;
@@ -19,8 +27,26 @@
   background: linear-gradient(135deg, #ff4757 0%, #ff8c3a 100%);
   border-radius: 100rpx;
   padding: 14rpx 32rpx;
-  margin-bottom: 2.5vh;
   box-shadow: 0 8rpx 24rpx rgba(255, 71, 87, 0.3);
+}
+
+.fav-toggle {
+  padding: 12rpx 26rpx;
+  border-radius: 100rpx;
+  font-size: 26rpx;
+  background: #1a1a1a;
+  color: #888;
+  border: 1rpx solid #2a2a2a;
+  transition: all .18s ease;
+}
+
+.fav-toggle.faved {
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff5252;
+  border-color: rgba(255, 82, 82, 0.4);
+}
+.fav-toggle:active {
+  transform: scale(0.94);
 }
 
 .tag-emoji {
@@ -65,6 +91,11 @@
   letter-spacing: 1rpx;
   margin: 30rpx 0;
   text-shadow: 0 2rpx 10rpx rgba(255, 71, 87, 0.2);
+  /* 最多显示 8 行（约 120 字），超长自动省略，保证卡片首屏可见 */
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ==== 卡片预览 ==== */
@@ -120,13 +151,20 @@
   display: inline-block;
 }
 
-.template-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.template-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.template-list {
+  display: inline-flex;
   gap: 20rpx;
+  padding: 4rpx 2rpx 12rpx;
 }
 
 .template-item {
+  flex: 0 0 auto;
+  width: 160rpx;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 20rpx;
   padding: 24rpx 12rpx;
@@ -139,6 +177,16 @@
   background: rgba(255, 71, 87, 0.12);
   border-color: #ff4757;
   box-shadow: 0 8rpx 24rpx rgba(255, 71, 87, 0.2);
+}
+
+/* 正在生成时，选中的模板项做呼吸态提示 */
+.template-item.loading {
+  animation: template-breathing 1.2s ease-in-out infinite;
+}
+
+@keyframes template-breathing {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 .template-icon {
@@ -174,18 +222,27 @@
   justify-content: center;
 }
 
-.secondary-actions {
-  display: flex;
-  gap: 20rpx;
-  margin-bottom: 24rpx;
-}
-
-.g-btn-ghost.half {
-  flex: 1;
-}
-
 .g-btn-ghost.full {
   width: 100%;
+  margin-bottom: 20rpx;
+}
+
+/* 两按钮同一行：flex:1 平分；单按钮存在时自动铺满整行 */
+.btn-row {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.btn-row .row-btn {
+  flex: 1;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 96rpx;
+  line-height: 96rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  min-width: 0; /* 允许弹性收缩，避免文字过长撑破布局 */
 }
 
 .again-btn {

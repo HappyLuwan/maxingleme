@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 塔罗指引</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 750px;
+            height: 1000px;
+            font-family: 'Times New Roman', 'Songti SC', serif;
+            -webkit-font-smoothing: antialiased;
+            background: #1a1230;
+        }
+
+        .card {
+            width: 750px;
+            height: 1000px;
+            padding: 50px 50px 46px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(212, 175, 55, 0.10) 0%, transparent 40%),
+                radial-gradient(circle at 80% 90%, rgba(120, 60, 180, 0.15) 0%, transparent 50%),
+                linear-gradient(160deg, #1a1230 0%, #0a0820 100%);
+            color: #f0e0b8;
+        }
+
+        /* 星星装饰 */
+        .star {
+            position: absolute;
+            color: rgba(212, 175, 55, 0.4);
+            font-size: 16px;
+            pointer-events: none;
+        }
+        .star.s1 { top: 80px; right: 90px; font-size: 20px; }
+        .star.s2 { top: 200px; left: 90px; font-size: 14px; }
+        .star.s3 { top: 140px; left: 200px; font-size: 12px; }
+        .star.s4 { bottom: 240px; right: 60px; font-size: 18px; }
+        .star.s5 { bottom: 320px; left: 60px; font-size: 12px; }
+        .star.s6 { bottom: 180px; right: 200px; font-size: 14px; }
+
+        /* ==== 顶部标签 ==== */
+        .head-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .head-label {
+            font-family: 'Times New Roman', serif;
+            font-size: 22px;
+            letter-spacing: 8px;
+            color: #d4af37;
+            font-style: italic;
+        }
+
+        .head-serial {
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+            color: rgba(212, 175, 55, 0.5);
+            letter-spacing: 2px;
+        }
+
+        /* ==== 塔罗牌卡 ==== */
+        .tarot-card {
+            width: 420px;
+            height: 620px;
+            margin: 0 auto;
+            border: 3px solid #d4af37;
+            border-radius: 12px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 60%),
+                linear-gradient(160deg, #221838 0%, #120a28 100%);
+            box-shadow:
+                0 0 40px rgba(212, 175, 55, 0.25),
+                inset 0 0 30px rgba(212, 175, 55, 0.06);
+        }
+
+        /* 内边框装饰 */
+        .tarot-card::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .tarot-num {
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            font-size: 32px;
+            letter-spacing: 6px;
+            color: #d4af37;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        /* 装饰分隔 */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 30px 20px;
+        }
+        .divider .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.6), transparent);
+        }
+        .divider .diamond {
+            color: #d4af37;
+            font-size: 12px;
+        }
+
+        /* 中央符号（月相） */
+        .symbol {
+            text-align: center;
+            font-size: 100px;
+            color: #d4af37;
+            line-height: 1;
+            margin: 10px 0 20px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* 牌意（金句） */
+        .oracle-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        .oracle-text {
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', serif;
+            font-weight: 700;
+            font-size: 30px;
+            line-height: 1.7;
+            letter-spacing: 3px;
+            color: #f5ecc4;
+            text-align: center;
+        }
+
+        .oracle-text.medium { font-size: 26px; line-height: 1.75; }
+        .oracle-text.long { font-size: 22px; line-height: 1.8; }
+
+        /* 牌名 */
+        .tarot-name-en {
+            font-family: 'Times New Roman', serif;
+            font-size: 28px;
+            letter-spacing: 6px;
+            color: #d4af37;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .tarot-name-cn {
+            font-family: 'STKaiti', 'KaiTi', serif;
+            font-size: 22px;
+            letter-spacing: 8px;
+            color: rgba(212, 175, 55, 0.8);
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        /* ==== 底部 ==== */
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-family: 'STKaiti', 'KaiTi', 'Georgia', serif;
+            font-size: 20px;
+            color: rgba(212, 175, 55, 0.5);
+            letter-spacing: 4px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .footer-hint {
+            font-size: 16px;
+            color: rgba(212, 175, 55, 0.35);
+            letter-spacing: 3px;
+            margin-top: 8px;
+            font-family: 'PingFang SC', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="star s1">✦</div>
+    <div class="star s2">✧</div>
+    <div class="star s3">✦</div>
+    <div class="star s4">✦</div>
+    <div class="star s5">✧</div>
+    <div class="star s6">✦</div>
+
+    <div class="head-row">
+        <div class="head-label">TAROT · MIDNIGHT DRAW</div>
+        <div class="head-serial">#{{ serialNo }}</div>
+    </div>
+
+    <div class="tarot-card">
+        <div class="tarot-num">{{ tarotNo }}</div>
+        <div class="divider">
+            <div class="line"></div>
+            <div class="diamond">◆</div>
+            <div class="line"></div>
+        </div>
+
+        <div class="symbol">☾</div>
+
+        <div class="oracle-body">
+            <div class="oracle-text {% if contentLength > 35 %}long{% elif contentLength > 20 %}medium{% endif %}">{{ content }}</div>
+        </div>
+
+        <div class="divider">
+            <div class="line"></div>
+            <div class="diamond">◆</div>
+            <div class="line"></div>
+        </div>
+
+        <div class="tarot-name-en">{{ tarotEn }}</div>
+        <div class="tarot-name-cn">— {{ tarotCn }} —</div>
+    </div>
+
+    <div class="footer">
+        {{ ganzhiYear }} · {{ dateStr }} · {{ timeStr }}
+    <div class="footer-hint">今日启示 · 命运翻开的这张牌</div>
+    </div>
+</div>
+</body>
+</html>

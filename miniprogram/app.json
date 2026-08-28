@@ -2,6 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/result/result",
+    "pages/mine/mine",
     "pages/agreement/agreement",
     "pages/privacy/privacy",
     "pages/about/about"
@@ -12,6 +13,26 @@
     "navigationBarTitleText": "骂醒了么",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#0a0a0a"
+  },
+  "tabBar": {
+    "color": "#666",
+    "selectedColor": "#ff5252",
+    "backgroundColor": "#0a0a0a",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "骂醒"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的"
+      },
+      {
+        "pagePath": "pages/about/about",
+        "text": "关于"
+      }
+    ]
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",

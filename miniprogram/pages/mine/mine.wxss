@@ -1,0 +1,211 @@
+/* pages/mine/mine.wxss */
+
+.page {
+  min-height: 100vh;
+  padding: 4vh 32rpx 6vh;
+  box-sizing: border-box;
+  background: #0a0a0a;
+}
+
+/* ---------- 顶部统计卡 ---------- */
+.stats-card {
+  display: flex;
+  align-items: center;
+  padding: 3vh 20rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #1a1a1a 0%, #232323 100%);
+  border: 1rpx solid #2a2a2a;
+  margin-bottom: 3vh;
+}
+
+.stats-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stats-num {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #ff5252;
+  font-family: DIN, -apple-system, sans-serif;
+}
+
+.stats-label {
+  font-size: 24rpx;
+  color: #888;
+}
+
+.stats-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #2a2a2a;
+}
+
+/* ---------- Tab 切换 ---------- */
+.tab-bar {
+  display: flex;
+  padding: 10rpx;
+  border-radius: 60rpx;
+  background: #1a1a1a;
+  margin-bottom: 2.5vh;
+  border: 1rpx solid #2a2a2a;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #888;
+  border-radius: 50rpx;
+  transition: all .2s ease;
+}
+
+.tab-item.active {
+  background: #ff5252;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(255, 82, 82, 0.3);
+}
+
+/* ---------- 列表 ---------- */
+.list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.record-item {
+  padding: 28rpx 28rpx 24rpx;
+  border-radius: 20rpx;
+  background: #1a1a1a;
+  border: 1rpx solid #2a2a2a;
+  transition: transform .1s ease;
+}
+
+.record-item:active {
+  transform: scale(0.98);
+  background: #232323;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+
+.record-style {
+  font-size: 24rpx;
+  color: #ffb84d;
+  background: rgba(255, 184, 77, 0.1);
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.record-time {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.record-content {
+  font-size: 30rpx;
+  line-height: 1.55;
+  color: #e8e8e8;
+  margin-bottom: 18rpx;
+  /* 单条最多显示 3 行，保持列表节奏 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.record-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fav-btn {
+  padding: 8rpx 24rpx;
+  border-radius: 40rpx;
+  background: #232323;
+  color: #888;
+  font-size: 24rpx;
+  border: 1rpx solid #2a2a2a;
+}
+
+.fav-btn.faved {
+  color: #ff5252;
+  background: rgba(255, 82, 82, 0.1);
+  border-color: rgba(255, 82, 82, 0.3);
+}
+
+/* ---------- 底部提示 ---------- */
+.footer-tip {
+  text-align: center;
+  color: #555;
+  font-size: 24rpx;
+  padding: 3vh 0 2vh;
+}
+
+/* ---------- 空状态 ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12vh 0 6vh;
+  gap: 24rpx;
+}
+
+.empty-emoji {
+  font-size: 120rpx;
+  opacity: 0.7;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #888;
+  text-align: center;
+  padding: 0 60rpx;
+  line-height: 1.6;
+}
+
+.empty-btn {
+  margin-top: 3vh;
+  min-width: 320rpx;
+}
+
+/* ---------- 首次 loading ---------- */
+.loading-state {
+  text-align: center;
+  color: #666;
+  font-size: 26rpx;
+  padding: 12vh 0;
+}
+
+/* ---------- 页脚协议入口 ---------- */
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12rpx;
+  padding: 5vh 0 2vh;
+}
+
+.footer-link {
+  font-size: 24rpx;
+  color: #666;
+  padding: 6rpx 12rpx;
+}
+
+.footer-link:active {
+  color: #ff5252;
+}
+
+.footer-dot {
+  font-size: 24rpx;
+  color: #333;
+}

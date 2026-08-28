@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 树洞回响</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 750px;
+            height: 1000px;
+            font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: #0a0a0a;
+        }
+
+        .card {
+            width: 750px;
+            height: 1000px;
+            padding: 60px 56px 50px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #2b0a30 0%, #0a0a12 55%, #1a1030 100%);
+            color: #fff;
+        }
+
+        /* ==== 顶部：黑胶唱片 + 音轨信息 ==== */
+        .head-row {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .vinyl {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, #7a4dff 0%, #6a3dee 26%, #1a1a2a 27%, #1a1a2a 30%, #262638 31%, #262638 34%, #1a1a2a 35%, #1a1a2a 100%);
+            position: relative;
+            box-shadow: 0 0 30px rgba(122, 77, 255, 0.4);
+            flex-shrink: 0;
+        }
+
+        .vinyl::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: #0a0a12;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 唱片光泽 */
+        .vinyl::before {
+            content: '';
+            position: absolute;
+            top: 12%;
+            left: 20%;
+            width: 30%;
+            height: 12%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            border-radius: 50%;
+            transform: rotate(-25deg);
+        }
+
+        .track-info {
+            flex: 1;
+            padding-top: 6px;
+        }
+
+        .track-label {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+
+        .track-title {
+            font-size: 34px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .track-artist {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.55);
+            letter-spacing: 2px;
+        }
+
+        .track-artist strong {
+            color: #a98bff;
+            font-weight: 600;
+        }
+
+        /* ==== 顶部标签 ==== */
+        .hot-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(122, 77, 255, 0.18);
+            border: 1px solid rgba(122, 77, 255, 0.5);
+            border-radius: 20px;
+            font-size: 22px;
+            color: #a98bff;
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 22px;
+            align-self: flex-start;
+        }
+
+        /* ==== 评论主体 ==== */
+        .comment-block {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            padding: 20px 4px;
+        }
+
+        .comment-quote-mark {
+            font-family: 'Georgia', serif;
+            font-size: 130px;
+            color: rgba(169, 139, 255, 0.42);
+            line-height: 0.7;
+            margin-bottom: 10px;
+        }
+
+        .comment-text {
+            font-family: 'Songti SC', 'STSong', serif;
+            color: #fafafa;
+            letter-spacing: 2px;
+            font-size: 46px;
+            line-height: 1.6;
+            font-weight: 600;
+            padding-left: 4px;
+        }
+
+        .comment-text.medium { font-size: 38px; line-height: 1.65; }
+        .comment-text.long { font-size: 32px; line-height: 1.7; }
+
+        /* ==== 用户信息 & 互动 ==== */
+        .comment-meta {
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7a4dff, #ff5b9c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .user-meta {
+            flex: 1;
+        }
+
+        .username {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.75);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .comment-time {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 1px;
+        }
+
+        .interactions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .interact {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .interact .heart {
+            color: #a98bff;
+            font-size: 26px;
+        }
+
+        /* ==== 底部分隔条 ==== */
+        .footer {
+            margin-top: 26px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="head-row">
+        <div class="vinyl"></div>
+        <div class="track-info">
+            <div class="track-label">MIDNIGHT · 树洞回响</div>
+            <div class="track-title">今日金句</div>
+            <div class="track-artist">by <strong>AI · {{ styleName }}</strong></div>
+        </div>
+    </div>
+
+    <div class="hot-tag">✦ 高赞留言</div>
+
+    <div class="comment-block">
+        <div class="comment-quote-mark">"</div>
+        <div class="comment-text {% if contentLength > 35 %}long{% elif contentLength > 20 %}medium{% endif %}">{{ content }}</div>
+    </div>
+
+    <div class="comment-meta">
+        <div class="avatar">匿</div>
+        <div class="user-meta">
+                    <div class="username">匿名网友 · 来自树洞</div>
+            <div class="comment-time">{{ dateStr }} · {{ timeStr }}</div>
+        </div>
+        <div class="interactions">
+            <div class="interact"><span class="heart">♥</span> {{ likeCount }}</div>
+            <div class="interact">💬 {{ replyCount }}</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span>#{{ serialNo }}</span>
+        <span>{{ ganzhiYear }}年 · 树洞回响</span>
+    </div>
+</div>
+</body>
+</html>

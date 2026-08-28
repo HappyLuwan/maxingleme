@@ -21,7 +21,7 @@
 ### 2. 新建服务
 
 - 云托管首页 → **新建服务**
-- 服务名：`maxingleme-server`（**必须和 `miniprogram/utils/config.js` 里的 `cloudService` 完全一致**）
+- 服务名：`flask-ejik`（**必须和 `miniprogram/utils/config.js` 里的 `cloudService` 完全一致，当前项目已配为此值**）
 - 备注：骂醒了么后端
 
 ### 3. 加体验成员
@@ -40,10 +40,10 @@
 1. **打包代码**（在项目根目录执行）
    ```bash
    cd /Users/breatche/code/wechat-demo/server-py
-   zip -r ../maxingleme-server.zip . -x "__pycache__/*" -x ".venv/*" -x ".idea/*" -x ".env"
+   zip -r ../flask-ejik.zip . -x "__pycache__/*" -x ".venv/*" -x ".idea/*" -x ".env"
    ```
-2. 进入云托管 → 选择服务 `maxingleme-server` → **版本管理** → **新建版本**
-3. 上传方式选 **"本地代码"** → 选择刚才的 `maxingleme-server.zip`
+2. 进入云托管 → 选择服务 `flask-ejik` → **版本管理** → **新建版本**
+3. 上传方式选 **"本地代码"** → 选择刚才的 `flask-ejik.zip`
 4. **构建配置**：
    - Dockerfile 路径：`Dockerfile`（默认）
    - 端口：`8080`
@@ -60,8 +60,15 @@
    | `DEEPSEEK_MODEL` | `deepseek-chat` | 或 `deepseek-reasoner` |
    | `ADMIN_TOKEN` | `换一个强密码，例如 mxlm-x8k3f9` | 用于访问 `/admin.html` |
    | `CARD_OUTPUT_DIR` | `/tmp/mxlm-cards` | Dockerfile 里已建好 |
+   | `WX_MSG_SEC_CHECK_ENABLED` | `true` | 微信 msgSecCheck 兜底（云托管免 token，免费） |
+   | `DB_BACKEND` | `mysql` | 存储后端，生产必须走 MySQL |
+   | `DB_HOST` | `10.x.x.x` | 云托管 MySQL 内网 IP（在数据库详情里看） |
+   | `DB_PORT` | `3306` | 端口 |
+   | `DB_USER` | `root` | 数据库账号 |
+   | `DB_PASSWORD` | `你设置的密码` | ⚠️ 强密码，别用弱口令 |
+   | `DB_NAME` | `mxlm` | 数据库名（下面第五章会建） |
 
-6. **点"提交"**，等待构建（Python 版首次约 3-5 分钟，比 Java 版快很多）
+6. **点"提交"**，等待构建（首次约 3-5 分钟，后续增量构建 1-2 分钟）
 7. 构建成功后 → **版本管理** → 找到刚才的版本 → **发布**
 
 ### 方式 B：Git 仓库连接（自动化，适合后续迭代）
@@ -81,9 +88,9 @@
 
 ```javascript
 const config = {
-  cloudEnv: 'prod-1g5xxxxxx',   // 【替换】刚才记下的环境 ID
-  cloudService: 'maxingleme-server',
-  useCloudContainer: true,      // 生产环境必须为 true
+  cloudEnv: 'prod-d6g8qda601a1eddc7',  // 【替换】刚才记下的环境 ID（当前项目已预填）
+  cloudService: 'flask-ejik',          // 服务名，必须与云托管控制台完全一致
+  useCloudContainer: true,             // 生产环境必须为 true
   requestTimeout: 30000
 }
 ```
@@ -110,7 +117,7 @@ const config = {
 - 检查 `app.js` 里 `wx.cloud.init` 是否成功执行（看 console）
 
 ### Q2：报 `service not found` 或 404
-- 检查 `cloudService` 是否等于云托管服务名 `maxingleme-server`
+- 检查 `cloudService` 是否等于云托管服务名 `flask-ejik`
 - 云托管服务是否已"发布"（新建版本 ≠ 发布）
 
 ### Q3：构建卡在 Playwright 步骤 / 超时
@@ -128,30 +135,113 @@ const config = {
 - 看云托管日志：搜 `CardService` 或 `PlaywrightPool` 关键字
 - 首次启动 Playwright 初始化约需 3-5 秒，请求要预留超时
 
-### Q6：想切换 AI 供应商
+### Q6：想切换 AI 供应商 / 查看用户数据
 - 部署完成后，云托管 → 服务 → **公网访问** → 开启（会给一个 `https://xxx.service.tcloudbase.com` 的域名）
 - 浏览器打开 `https://xxx.service.tcloudbase.com/admin.html`
-- 输入 `ADMIN_TOKEN` → 一键切换 Provider
+- 输入 `ADMIN_TOKEN` 后进入 4 Tab 后台：
+  - 📊 **概览**：总用户 / 总骂醒 / 今日骂醒 / 总收藏 / 今日新增用户 + 当前 Provider
+  - 🎴 **卡片数据**：9 套模板的生成 / 保存 / 分享数与保存率 / 分享率
+  - 💬 **用户吐槽**：分页浏览用户输入与 AI 回复（**openid、手机号、身份证等自动脱敏**），可按时间/风格/仅收藏筛选，"详情"按钮可切换脱敏/完整模式
+  - ⚙️ **Provider**：一键切换主力 / 兜底 AI 模型
+- ⚠️ 生产上必须把 `ADMIN_TOKEN` 改为强密码，别用默认的 `mxlm-admin-2026`
 
 ---
 
-## 五、成本预估（DeepSeek + 云托管）
+## 五、云托管 MySQL 数据持久化（用户体系必读）⚠️
+
+从 v1.1 版本起，后端引入了用户历史/收藏/限流的持久化存储。生产环境**必须使用云托管 MySQL**，容器本地数据会随重启丢失。
+
+### 1. 开通云托管 MySQL
+
+- 云托管控制台 → 左侧菜单 **数据库 / MySQL** → **创建实例**
+- 版本：**MySQL 5.7 或 8.0**（本项目已在 5.7 验证）
+- 规格：入门级 1核1G（月费约 20-50 元）即可，MVP 阶段足够
+- 网络：**必须选和云托管服务相同的 VPC**（默认选项一般就对）
+- 设置 root 密码：⚠️ **强密码**（不少于 12 位，包含大小写数字符号）
+- 创建完成后记下**内网地址**（形如 `10.18.100.131:3306`）
+
+### 2. 创建业务数据库 & 授权
+
+云托管 MySQL 提供了 Web SQL 控制台（"实例详情 → 数据管理"），或用任意 MySQL 客户端连接内网地址后执行：
+
+```sql
+CREATE DATABASE IF NOT EXISTS mxlm DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 可选：为业务单建低权限账号（生产强烈推荐，不要直接用 root）
+CREATE USER 'mxlm_app'@'%' IDENTIFIED BY '你设置的强密码';
+GRANT ALL PRIVILEGES ON mxlm.* TO 'mxlm_app'@'%';
+FLUSH PRIVILEGES;
+```
+
+> ⚠️ 生产建议：不要用 root，为服务单独建 `mxlm_app` 账号，只对 `mxlm` 库授权。
+
+### 3. 配置环境变量
+
+在云托管服务的"环境变量"里补齐以下（第二章方式 A 的表格里已列出）：
+
+| 变量名 | 值 |
+|---|---|
+| `DB_BACKEND` | `mysql` |
+| `DB_HOST` | 你的 MySQL 内网 IP |
+| `DB_PORT` | `3306` |
+| `DB_USER` | `root` 或 `mxlm_app` |
+| `DB_PASSWORD` | 你设置的密码 |
+| `DB_NAME` | `mxlm` |
+| `DB_POOL_SIZE` | `5`（默认足够，量大再调） |
+
+### 4. 建表（自动）
+
+服务启动时会自动执行 [db.py](server-py/app/db.py) 里的 `init_db()`，在 `mxlm` 库中创建三张表：
+- `roast_records`：骂醒记录
+- `favorites`：收藏
+- `rate_limits`：每日限流计数
+
+无需手动建表。
+
+### 5. 验证连通性
+
+方式 A：进入云托管容器 Shell（"实例列表 → 操作 → 登录容器"），执行：
+```bash
+mysql -h $DB_HOST -P $DB_PORT -u $DB_USER -p$DB_PASSWORD $DB_NAME -e "SHOW TABLES;"
+# 预期能看到 favorites / rate_limits / roast_records 三张表
+```
+
+方式 B：观察启动日志，出现如下即成功：
+```
+[DB] MySQL 连接池就绪 host=10.18.100.131:3306 db=mxlm pool_size=5
+[DB] 初始化完成 backend=mysql
+```
+
+### 6. 多实例部署（可选）
+
+用 MySQL 后**不再有 SQLite 的单实例限制**：
+- 云托管 → 服务 → **实例数配置** → Min=1, Max=按需（如 3）
+- 峰值扩容、灰度发布都无压力
+
+### ⚠️ 数据备份
+
+云托管 MySQL 默认已开启每日自动备份（保留 7 天），你可以在实例详情里手动触发备份/恢复。**不需要自己写备份脚本**。
+
+---
+
+## 六、成本预估（DeepSeek + 云托管 + MySQL）
 
 | 项目 | 单价 | MVP 阶段月消耗 |
 |---|---|---|
 | 云托管 1核1G | 首月免费，之后约 60 元/月 | ~60 元 |
+| 云托管 MySQL 1核1G | 约 25-50 元/月 | ~30 元 |
 | DeepSeek Chat | 0.001 元/千 tokens | 100 人 × 10 次 × 500 tokens ≈ 0.5 元 |
-| **合计** | - | **约 60 元/月** |
+| **合计** | - | **约 90 元/月** |
 
 > ⚠️ 上线拉流量后重点看：**DeepSeek 会成为主要成本**，1000 DAU 时可能到 100 元/月，考虑加缓存（相同 userInput 复用结果）。
 
 ---
 
-## 六、下一步
+## 七、下一步
 
 - [ ] 部署 OK 后，在体验版打磨 3-5 天
 - [ ] 把 Prompt 打磨得更"毒"（这是产品的护城河）
 - [ ] 优化卡片模板（多几套风格，让用户想收集）
 - [ ] 增加匿名点赞 / 热门榜（做社交货币）
-- [ ] 内容安全接入微信 msgSecCheck（避免违规下架）
+- [x] 内容安全接入微信 msgSecCheck（避免违规下架）
 - [ ] 走审核 → 正式发布

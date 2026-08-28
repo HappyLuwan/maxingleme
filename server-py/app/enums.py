@@ -70,9 +70,16 @@ class CardTemplate:
 
 
 CARD_TEMPLATES: dict[str, CardTemplate] = {
-    "punch": CardTemplate("punch", "金句海报", "card-punch.html"),
-    "chat": CardTemplate("chat", "聊天截图", "card-chat.html"),
-    "poster": CardTemplate("poster", "语录海报", "card-poster.html"),
+    # ---- 正式款：9 套按吸引力排序（前 3 张最抓眼） ----
+    "tarot":   CardTemplate("tarot",   "塔罗指引", "card-tarot.html"),
+    "rx":      CardTemplate("rx",      "醒神药方", "card-rx.html"),
+    "wrapped": CardTemplate("wrapped", "年终盘点", "card-wrapped.html"),
+    "checkin": CardTemplate("checkin", "清醒打卡", "card-checkin.html"),
+    "track":   CardTemplate("track",   "单曲循环", "card-track.html"),
+    "news":    CardTemplate("news",    "社论快报", "card-news.html"),
+    "chat":    CardTemplate("chat",    "对话截屏", "card-chat.html"),
+    "comment": CardTemplate("comment", "树洞回响", "card-comment.html"),
+    "note":    CardTemplate("note",    "便利贴纸", "card-note.html"),
 }
 
 

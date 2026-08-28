@@ -34,3 +34,10 @@ mxlm-cards/
 
 # Playwright 浏览器缓存（本地）
 ms-playwright/
+
+# SQLite 数据文件（用户体系）
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

@@ -52,6 +52,7 @@ logs/
 *.log
 tmp/
 temp/
+.preview/
 
 # ==================== Node ====================
 node_modules/

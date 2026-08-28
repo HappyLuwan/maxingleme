@@ -1,0 +1,88 @@
+<!-- pages/mine/mine.wxml -->
+<view class="page">
+
+  <!-- 顶部统计 -->
+  <view class="stats-card">
+    <view class="stats-item">
+      <view class="stats-num">{{stats.historyCount}}</view>
+      <view class="stats-label">历史</view>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <view class="stats-num">{{stats.favoriteCount}}</view>
+      <view class="stats-label">收藏</view>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <view class="stats-num">{{stats.todayCount}}</view>
+      <view class="stats-label">今日</view>
+    </view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'history' ? 'active' : ''}}"
+          data-tab="history"
+          bindtap="onSwitchTab">
+      🕓 我的历史
+    </view>
+    <view class="tab-item {{activeTab === 'favorite' ? 'active' : ''}}"
+          data-tab="favorite"
+          bindtap="onSwitchTab">
+      ❤ 我的收藏
+    </view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="list-wrap" wx:if="{{list.length > 0}}">
+    <view class="record-item"
+          wx:for="{{list}}"
+          wx:key="roastId"
+          data-item="{{item}}"
+          data-id="{{item.roastId}}"
+          bindtap="onTapItem"
+          bindlongpress="onLongPressItem">
+      <view class="record-header">
+        <text class="record-style">{{item.styleEmoji}} {{item.styleName}}</text>
+        <text class="record-time">{{item._time}}</text>
+      </view>
+      <view class="record-content">{{item._contentPreview}}</view>
+      <view class="record-footer">
+        <view class="fav-btn {{item.isFavorite ? 'faved' : ''}}"
+              catchtap="onToggleFavorite"
+              data-id="{{item.roastId}}"
+              data-fav="{{item.isFavorite}}">
+          <text>{{item.isFavorite ? '❤ 已收藏' : '♡ 收藏'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分页 loading / 底部提示 -->
+    <view class="footer-tip" wx:if="{{loading}}">加载中...</view>
+    <view class="footer-tip" wx:elif="{{!hasMore && list.length > 0}}">— 到底啦 —</view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:elif="{{inited && !loading}}">
+    <view class="empty-emoji">{{activeTab === 'history' ? '📭' : '💔'}}</view>
+    <view class="empty-text">
+      {{activeTab === 'history' ? '还没有历史，去骂醒自己一次吧' : '还没有收藏，把戳心的文案存起来吧'}}
+    </view>
+    <button class="g-btn primary-btn empty-btn" bindtap="onNavIndex">
+      🔥 立即骂醒
+    </button>
+  </view>
+
+  <!-- 首次进入 loading -->
+  <view class="loading-state" wx:elif="{{loading}}">加载中...</view>
+
+  <!-- 页脚：协议入口（合规展示） -->
+  <view class="footer-links">
+    <text class="footer-link" bindtap="onNavAgreement">用户协议</text>
+    <text class="footer-dot">·</text>
+    <text class="footer-link" bindtap="onNavPrivacy">隐私政策</text>
+    <text class="footer-dot">·</text>
+    <text class="footer-link" bindtap="onNavAbout">关于</text>
+  </view>
+
+</view>

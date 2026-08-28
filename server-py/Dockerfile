@@ -1,11 +1,11 @@
 # ==========================================
-# 骂醒了么后端服务 · Python 版 Dockerfile
+# 骂醒了么后端服务 Dockerfile
 # 部署平台：微信云托管 CloudBase Run
 #
-# 优势对比 Java 版：
-#   - 镜像大小：~500MB（Java 版 ~900MB）
-#   - 冷启动：3-5s（Java 版 15-30s）
-#   - 运行时内存：~500MB（Java 版 ~1.5GB）
+# 基于 python:3.12-slim + Playwright 预装 Chromium：
+#   - 镜像大小：~500MB
+#   - 冷启动：3-5s
+#   - 运行时内存：~500MB
 # ==========================================
 
 FROM python:3.12-slim-bookworm

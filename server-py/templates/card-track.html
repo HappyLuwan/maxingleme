@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 单曲循环</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 750px;
+            height: 1000px;
+            font-family: 'Helvetica Neue', 'PingFang SC', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: #14161a;
+        }
+
+        .card {
+            width: 750px;
+            height: 1000px;
+            padding: 60px 60px 40px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background: #14161a;
+            color: #fff;
+        }
+
+        /* ==== 顶部：App 标签 ==== */
+        .app-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .app-name {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.55);
+            letter-spacing: 4px;
+            font-weight: 500;
+        }
+
+        .app-name .accent { color: #1db954; font-weight: 700; }
+
+        .app-serial {
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 2px;
+        }
+
+        /* ==== 专辑封面（大方块）==== */
+        .cover {
+            width: 100%;
+            height: 470px;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* 深邃渐变封面 */
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 106, 61, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(29, 185, 84, 0.5) 0%, transparent 55%),
+                linear-gradient(135deg, #1a0f30 0%, #0a1f30 100%);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            margin-bottom: 26px;
+        }
+
+        .cover-noise {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 8%),
+                radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 10%),
+                radial-gradient(circle at 60% 85%, rgba(255, 255, 255, 0.03) 0%, transparent 8%);
+        }
+
+        .cover-quote-mark {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            font-family: 'Georgia', serif;
+            font-size: 180px;
+            color: rgba(255, 255, 255, 0.12);
+            line-height: 0.7;
+            font-weight: 900;
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .cover-lyric {
+            font-family: 'Songti SC', 'STSong', serif;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 3px;
+            font-size: 44px;
+            line-height: 1.55;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .cover-lyric.medium { font-size: 36px; line-height: 1.6; }
+        .cover-lyric.long { font-size: 30px; line-height: 1.65; }
+
+        .cover-badge {
+            position: absolute;
+            bottom: 24px;
+            right: 26px;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 3px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        /* ==== 单曲信息 ==== */
+        .track-info {
+            margin-bottom: 24px;
+        }
+
+        .track-title {
+            font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+            font-size: 42px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .track-artist {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+
+        .track-artist .dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+
+        /* ==== 播放条 ==== */
+        .player {
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 42%;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -6px;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .progress-time {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Georgia', 'Helvetica Neue', sans-serif;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* ==== 播放控件 ==== */
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 22px;
+        }
+
+        .ctrl-btn {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 28px;
+        }
+
+        .ctrl-btn.play {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #fff;
+            color: #14161a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            padding-left: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="app-bar">
+        <div class="app-name"><span class="accent">◆</span> CLARITY · NOW PLAYING</div>
+        <div class="app-serial">#{{ serialNo }}</div>
+    </div>
+
+    <div class="cover">
+        <div class="cover-noise"></div>
+        <div class="cover-quote-mark">"</div>
+        <div class="cover-content">
+            <div class="cover-lyric {% if contentLength > 35 %}long{% elif contentLength > 20 %}medium{% endif %}">{{ content }}</div>
+        </div>
+        <div class="cover-badge">TRACK {{ trackNo }}</div>
+    </div>
+
+    <div class="track-info">
+        <div class="track-title">今日金句 · Vol.{{ serialNo[3:] }}</div>
+        <div class="track-artist">
+            AI · {{ styleName }}
+            <span class="dot"></span>
+            {{ ganzhiYear }} EP
+            <span class="dot"></span>
+            {{ trackDuration }}
+        </div>
+    </div>
+
+    <div class="player">
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <div class="progress-time">
+            <span>0:42</span>
+            <span>{{ trackDuration }}</span>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="ctrl-btn">⏮</div>
+        <div class="ctrl-btn play">▶</div>
+        <div class="ctrl-btn">⏭</div>
+    </div>
+</div>
+</body>
+</html>

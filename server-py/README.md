@@ -1,6 +1,6 @@
-# 骂醒了么 · 后端（Python 版）
+# 骂醒了么 · 后端
 
-**技术栈**：FastAPI + Playwright + Jinja2 + OpenAI SDK（兼容 DeepSeek/混元/豆包/通义）
+**技术栈**：Python 3.12 + FastAPI + Playwright + Jinja2 + OpenAI SDK（兼容 DeepSeek/混元/豆包/通义）
 
 ## 🎯 项目结构
 
@@ -15,7 +15,7 @@ server-py/
 │   ├── config.py            # 配置 + 运行时可切换 provider
 │   ├── common.py            # 统一响应/异常
 │   ├── enums.py             # 风格枚举、卡片模板
-│   ├── prompts.py           # 3 套毒舌 Prompt（毒舌/东北/温柔）
+│   ├── prompts.py           # 6 种风格的 Prompt 模板
 │   ├── security.py          # 敏感词过滤 + 心理危机词引导
 │   ├── repository.py        # 内存记录仓库 + TTL
 │   ├── playwright_pool.py   # 无头浏览器单例池
@@ -27,9 +27,15 @@ server-py/
 │       ├── providers.py     # DeepSeek/混元/豆包/通义 + Mock
 │       └── router.py        # 路由 + 自动 fallback
 └── templates/
-    ├── card-attack.html     # 卡片模板 1：黑红渐变暴击风
-    ├── card-chat.html       # 卡片模板 2：微信聊天截图风
-    └── card-poster.html     # 卡片模板 3：米黄纸质海报风
+    ├── card-chat.html       # 稳定款：iOS 深色 iMessage 聊天截图
+    ├── card-checkin.html    # 实验款：清醒打卡
+    ├── card-rx.html         # 实验款：清醒处方
+    ├── card-wrapped.html    # 实验款：年度骂醒
+    ├── card-comment.html    # 实验款：深夜留言板
+    ├── card-news.html       # 实验款：骂醒日报
+    ├── card-note.html       # 实验款：深夜便签
+    ├── card-track.html      # 实验款：骂醒单曲
+    └── card-tarot.html      # 实验款：清醒塔罗
 ```
 
 ## 🚀 本地快速启动
@@ -58,36 +64,33 @@ uvicorn main:app --host 0.0.0.0 --port 8080 --reload
 
 访问：
 - Swagger 文档：http://localhost:8080/docs
-- 健康检查：http://localhost:8080/actuator/health
+- 健康检查：http://localhost:8080/health
 
 ### 4. 快速验证
 ```bash
 curl -X POST http://localhost:8080/api/roast \
   -H 'Content-Type: application/json' \
-  -d '{"userInput":"前任又来找我了，我心动了怎么办","style":"dushe"}'
+  -d '{"userInput":"前任又来找我了，我心动了怎么办","style":"yiju"}'
 ```
 
-## 📊 与 Java 版对比
+## 🎭 支持的骂醒风格
 
-| 维度 | Java 版 | Python 版 |
+| Key | 名称 | 定位 |
 |---|---|---|
-| 后端行数 | ~1500 行 | ~800 行 ✅ |
-| 镜像大小 | ~900MB | ~500MB ✅ |
-| 冷启动 | 15-30s | 3-5s ✅ |
-| 运行时内存 | ~1.5GB | ~500MB ✅ |
-| 云托管月成本 | ¥72 (1核2G) | ¥54 (0.5核2G) ✅ |
-| Playwright 集成难度 | 高（浏览器池 + 版本坑） | 极低（官方 install） |
-| LLM 生态 | LangChain4j（不成熟） | OpenAI SDK（事实标准） |
+| `yiju` | 一针见血 | 一句话暴击，推荐分享 |
+| `yinyang` | 阴阳怪气 | 阴阳怪气小天才 |
+| `wenrou` | 温柔姐姐 | 温柔知性，直击心底 |
+| `luxun` | 鲁迅式 | 深刻犀利，字字诛心 |
+| `zhexue` | 哲学家 | 从哲学高度让你顿悟 |
+| `custom` | 自定义 | 用户自输入，不调用 AI |
 
 ## 🔧 关键接口
-
-小程序前端接口不变，与 Java 版**协议完全兼容**（同样字段、同样 code 返回）：
 
 - `POST /api/roast` — 一键骂醒
 - `GET /api/roast/styles` — 风格列表
 - `POST /api/card` — 生成卡片（返回 Base64）
 - `GET /api/card/image/{fileName}` — 卡片图片
-- `GET /admin/ai/providers` — 后台：Provider 列表
+- `GET /admin/ai/providers` — 后台：Provider 列表（需 X-Admin-Token）
 - `POST /admin/ai/switch` — 后台：一键切换 active provider
 
 ## 🐳 Docker 构建
@@ -102,5 +105,4 @@ docker run -p 8080:8080 \
 
 ## 🌈 部署到微信云托管
 
-见根目录 [DEPLOY.md](../DEPLOY.md)。
-关键：GitHub 拉取时**目标目录填 `server-py/`**（不再是 `server/`）。
+见根目录 [DEPLOY.md](../DEPLOY.md)。关键：GitHub 拉取时**目标目录填 `server-py/`**。

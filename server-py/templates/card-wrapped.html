@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 年终盘点</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 750px;
+            height: 1000px;
+            font-family: 'Helvetica Neue', 'PingFang SC', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: #ff3d7f;
+        }
+
+        .card {
+            width: 750px;
+            height: 1000px;
+            padding: 56px 56px 48px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            /* 撞色渐变：荧光粉 → 深紫 */
+            background:
+                radial-gradient(circle at 100% 0%, #ffcf3d 0%, transparent 40%),
+                radial-gradient(circle at 0% 100%, #7c3aed 0%, transparent 55%),
+                linear-gradient(135deg, #ff3d7f 0%, #ff2d55 100%);
+            color: #fff;
+        }
+
+        /* 撞色装饰圆点 */
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .deco-circle.c1 { width: 220px; height: 220px; top: -60px; right: -60px; background: #ffcf3d; opacity: 0.85; }
+        .deco-circle.c2 { width: 140px; height: 140px; bottom: 180px; left: -50px; background: #22d3ee; opacity: 0.7; }
+        .deco-circle.c3 { width: 60px; height: 60px; top: 340px; right: 30px; background: #fff; opacity: 0.9; }
+
+        /* ==== 顶部品牌栏 ==== */
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .head-title {
+            font-family: 'Helvetica Neue', 'PingFang SC', sans-serif;
+            font-weight: 900;
+            font-size: 28px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+
+        .head-title .accent { color: #ffcf3d; }
+
+        .head-serial {
+            font-family: 'Georgia', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 2px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 14px;
+            border-radius: 20px;
+        }
+
+        /* ==== 巨型主标（年份 + WRAPPED）==== */
+        .big-title {
+            margin-bottom: 8px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .big-year {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 900;
+            font-size: 140px;
+            line-height: 0.92;
+            letter-spacing: -4px;
+            color: #fff;
+            text-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        .big-sub {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 900;
+            font-size: 74px;
+            line-height: 0.95;
+            letter-spacing: 6px;
+            color: #ffcf3d;
+            text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.18);
+            margin-top: 8px;
+        }
+
+        /* ==== 关键数据条 ==== */
+        .rank-strip {
+            display: inline-block;
+            background: #0a0a0a;
+            color: #ffcf3d;
+            padding: 12px 26px;
+            border-radius: 40px;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-top: 26px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .rank-strip .accent { color: #ff3d7f; }
+
+        /* ==== 金句块 ==== */
+        .quote-block {
+            flex: 1;
+            margin-top: 30px;
+            background: #0a0a0a;
+            border-radius: 24px;
+            padding: 38px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 2;
+            position: relative;
+            box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .quote-label {
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 20px;
+            color: #ffcf3d;
+            letter-spacing: 4px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .quote-text {
+            font-family: 'Songti SC', 'STSong', serif;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 2px;
+            font-size: 44px;
+            line-height: 1.5;
+        }
+
+        .quote-text.medium { font-size: 36px; line-height: 1.55; }
+        .quote-text.long { font-size: 30px; line-height: 1.6; }
+
+        /* ==== 底部标签 ==== */
+        .footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+            position: relative;
+        }
+
+        .footer-tag {
+            padding: 6px 14px;
+            border: 2px solid #fff;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .footer-time {
+            font-family: 'Georgia', serif;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="deco-circle c1"></div>
+    <div class="deco-circle c2"></div>
+    <div class="deco-circle c3"></div>
+
+    <div class="head">
+        <div class="head-title">YOUR <span class="accent">CLARITY</span> RECAP</div>
+        <div class="head-serial">#{{ serialNo }}</div>
+    </div>
+
+    <div class="big-title">
+        <div class="big-year">{{ dateStr[:4] }}</div>
+        <div class="big-sub">WRAPPED</div>
+    </div>
+
+    <div class="rank-strip">
+        击败了 <span class="accent">{{ beatPct }}%</span> 的同龄人 · TOP #{{ topRank }}
+    </div>
+
+    <div class="quote-block">
+        <div class="quote-label">◆ MOST-PLAYED QUOTE</div>
+        <div class="quote-text {% if contentLength > 35 %}long{% elif contentLength > 20 %}medium{% endif %}">{{ content }}</div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-tag">{{ styleName }}</div>
+        <div class="footer-time">{{ dateStr }} · {{ timeStr }}</div>
+    </div>
+</div>
+</body>
+</html>

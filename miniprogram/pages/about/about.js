@@ -2,10 +2,9 @@
 Page({
   data: {
     version: '1.0.0',
-    // ⚠️ 备案号占位符：备案通过后替换为真实备案号
-    icpNo: '暂未备案（体验版）',
-    // 备案后可显示，格式如：京ICP备2026xxxxxx号-1X
-    hasIcp: false
+    // ICP 备案号（已备案）
+    icpNo: '陕ICP备2026023416号-1X',
+    hasIcp: true
   },
 
   onLoad() {},

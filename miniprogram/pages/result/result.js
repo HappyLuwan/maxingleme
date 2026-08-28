@@ -1,6 +1,20 @@
 // pages/result/result.js
 const api = require('../../utils/api')
 
+// 正式款：9 套卡片按吸引力排序（首屏展示前 3 张最抓眼）
+// 顺序依据：视觉冲击 + 分享传播欲 + 辨识度 + 通用性 综合评估
+const TEMPLATES = [
+  { key: 'tarot',   name: '塔罗指引', icon: '🔮' },
+  { key: 'rx',      name: '醒神药方', icon: '💊' },
+  { key: 'wrapped', name: '年终盘点', icon: '🎯' },
+  { key: 'checkin', name: '清醒打卡', icon: '📊' },
+  { key: 'track',   name: '单曲循环', icon: '💿' },
+  { key: 'news',    name: '社论快报', icon: '📰' },
+  { key: 'chat',    name: '对话截屏', icon: '💬' },
+  { key: 'comment', name: '树洞回响', icon: '🌙' },
+  { key: 'note',    name: '便利贴纸', icon: '🗒' }
+]
+
 Page({
   data: {
     roast: {
@@ -10,22 +24,23 @@ Page({
       styleName: '',
       styleEmoji: ''
     },
-    templates: [
-      { key: 'punch', name: '金句海报风', icon: '⚡️' },
-      { key: 'chat', name: '聊天截图风', icon: '💬' },
-      { key: 'poster', name: '文艺语录风', icon: '📜' }
-    ],
-    selectedTemplate: 'punch',
+    templates: TEMPLATES,
+    selectedTemplate: 'tarot',
     generatingCard: false,
-    cardImageUrl: ''
+    cardImageUrl: '',
+    isFavorite: false
   },
 
   onLoad(options) {
     // 从本地缓存拿骂醒数据（首页存的）
     const roast = wx.getStorageSync('lastRoast')
     if (roast && roast.roastId === options.roastId) {
-      // 默认金句海报风（传播性最强）
+      // 默认塔罗指引（首屏最抓眼的卡片）
       this.setData({ roast })
+      // 自动生成默认卡片，省去用户手动点击一次
+      this.onGenerateCard()
+      // 同时拉取收藏状态（不阻塞主流程）
+      this.loadFavoriteStatus(options.roastId)
     } else {
       wx.showToast({ title: '数据丢失，请重新骂醒', icon: 'none' })
       setTimeout(() => wx.navigateBack(), 1500)
@@ -33,12 +48,55 @@ Page({
   },
 
   /**
-   * 选择卡片模板
+   * 拉取当前记录的收藏状态（从“我的”页进入的情况能看到正确标识）
+   */
+  loadFavoriteStatus(roastId) {
+    // 尝试从历史接口中预先读取标识（历史列表已带 isFavorite）；
+    // 简化起见，这里直接调列表接口滤一下（无专门 GET 单条 API，成本可接受）
+    api.listFavorites(1, 100).then((res) => {
+      const hit = (res.list || []).some((it) => it.roastId === roastId)
+      this.setData({ isFavorite: hit })
+    }).catch(() => {})
+  },
+
+  /**
+   * 切换收藏状态
+   */
+  onToggleFavorite() {
+    const roastId = this.data.roast.roastId
+    if (!roastId) return
+    const wasFav = this.data.isFavorite
+    const call = wasFav ? api.removeFavorite : api.addFavorite
+    call(roastId).then(() => {
+      wx.vibrateShort({ type: 'light' })
+      this.setData({ isFavorite: !wasFav })
+      wx.showToast({
+        title: wasFav ? '已取消收藏' : '已收藏',
+        icon: 'success'
+      })
+    }).catch((err) => {
+      wx.showToast({ title: err.message || '操作失败', icon: 'none' })
+    })
+  },
+
+  /**
+   * 选择卡片模板 —— 点击即生成，无需再点按钮
    */
   onSelectTemplate(e) {
     const key = e.currentTarget.dataset.key
+    // 正在生成时忽略新的切换请求，避免并发覆盖
+    if (this.data.generatingCard) {
+      wx.showToast({ title: '生成中，请稍候', icon: 'none' })
+      return
+    }
+    // 点了当前已经渲染成功的模板，不重复生成
+    if (key === this.data.selectedTemplate && this.data.cardImageUrl) {
+      return
+    }
     this.setData({ selectedTemplate: key })
     wx.vibrateShort({ type: 'light' })
+    // 立即触发生成
+    this.onGenerateCard()
   },
 
   /**
@@ -102,6 +160,8 @@ Page({
           success: () => {
             wx.hideLoading()
             wx.showToast({ title: '已保存到相册', icon: 'success' })
+            // 埋点：保存成功后上报（静默失败）
+            api.trackCardEvent(this.data.roast.roastId, this.data.selectedTemplate, 'save')
           },
           fail: (err) => {
             wx.hideLoading()
@@ -139,6 +199,8 @@ Page({
           filePath: res.tempFilePath,
           success: () => {
             wx.showToast({ title: '已保存到相册', icon: 'success' })
+            // 埋点：保存成功后上报（静默失败）
+            api.trackCardEvent(this.data.roast.roastId, this.data.selectedTemplate, 'save')
           },
           fail: (err) => {
             if (err.errMsg.indexOf('auth deny') > -1 || err.errMsg.indexOf('authorize') > -1) {
@@ -175,8 +237,12 @@ Page({
   onShareAppMessage() {
     const src = this.data.cardImageUrl
     const isHttp = src && src.startsWith('http')
+    // 埋点：分享事件（wx 无法区分真实发送，只能捕获点击分享）
+    if (this.data.roast.roastId && this.data.selectedTemplate) {
+      api.trackCardEvent(this.data.roast.roastId, this.data.selectedTemplate, 'share')
+    }
     return {
-      title: '我被 AI 一句话骂醒了：' + this.truncate(this.data.roast.content, 30),
+      title: '今日金句：' + this.truncate(this.data.roast.content, 30) + ' —— 骂醒了么',
       path: '/pages/index/index',
       imageUrl: isHttp ? src : ''
     }
@@ -188,6 +254,10 @@ Page({
   onShareTimeline() {
     const src = this.data.cardImageUrl
     const isHttp = src && src.startsWith('http')
+    // 埋点：分享朋友圈也计一次 share
+    if (this.data.roast.roastId && this.data.selectedTemplate) {
+      api.trackCardEvent(this.data.roast.roastId, this.data.selectedTemplate, 'share')
+    }
     return {
       title: this.truncate(this.data.roast.content, 30) + ' —— 骂醒了么',
       query: '',

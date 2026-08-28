@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>骂醒了么 · 运营后台</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f6f8; color: #222; font-size: 14px; }
+    header { background: linear-gradient(135deg, #ff5252, #ff9800); color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+    header h1 { font-size: 20px; font-weight: 600; }
+    header .actions { display: flex; gap: 12px; align-items: center; font-size: 13px; }
+    header button { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); color: #fff; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    header button:hover { background: rgba(255,255,255,.3); }
+
+    .tabs { background: #fff; padding: 0 24px; display: flex; border-bottom: 1px solid #eee; }
+    .tabs .tab { padding: 14px 20px; cursor: pointer; color: #666; border-bottom: 3px solid transparent; font-size: 15px; }
+    .tabs .tab.active { color: #ff5252; border-bottom-color: #ff5252; font-weight: 500; }
+    .tabs .tab:hover { color: #ff5252; }
+
+    main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* 概览 */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,.04); }
+    .card .label { color: #999; font-size: 13px; margin-bottom: 8px; }
+    .card .value { font-size: 28px; font-weight: 600; color: #333; }
+    .card .sub { color: #666; font-size: 12px; margin-top: 4px; }
+
+    /* 通用表格 */
+    .table-wrap { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,.04); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: top; }
+    th { background: #fafafa; color: #666; font-weight: 500; }
+    tr:hover td { background: #fafbfc; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .empty { padding: 60px 20px; text-align: center; color: #999; }
+
+    /* 筛选栏 */
+    .toolbar { background: #fff; padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,.04); }
+    .toolbar label { font-size: 13px; color: #666; }
+    .toolbar select, .toolbar input[type="number"] { padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+    .toolbar input[type="checkbox"] { transform: translateY(2px); margin-right: 4px; }
+    .toolbar button { background: #ff5252; color: #fff; border: 0; padding: 6px 16px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    .toolbar button:hover { background: #e04545; }
+
+    /* 分页 */
+    .pager { display: flex; justify-content: center; gap: 8px; padding: 16px 0; align-items: center; }
+    .pager button { background: #fff; border: 1px solid #ddd; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    .pager button:disabled { color: #ccc; cursor: not-allowed; }
+    .pager .info { color: #666; font-size: 13px; margin: 0 8px; }
+
+    /* Provider */
+    .provider-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .provider-item { background: #fff; padding: 16px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,.04); border: 2px solid transparent; }
+    .provider-item.active { border-color: #ff5252; }
+    .provider-name { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .provider-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; margin-right: 4px; }
+    .badge-active { background: #ffebee; color: #d32f2f; }
+    .badge-fallback { background: #e3f2fd; color: #1976d2; }
+    .badge-off { background: #f5f5f5; color: #999; }
+    .provider-actions { margin-top: 12px; display: flex; gap: 8px; }
+    .provider-actions button { flex: 1; background: #fff; border: 1px solid #ddd; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .provider-actions button:hover { background: #f5f5f5; }
+
+    /* 弹窗 */
+    .modal-mask { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; align-items: center; justify-content: center; }
+    .modal-mask.show { display: flex; }
+    .modal { background: #fff; border-radius: 8px; max-width: 640px; width: 90%; max-height: 80vh; overflow-y: auto; }
+    .modal-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-size: 16px; }
+    .modal-header .close { cursor: pointer; color: #999; font-size: 22px; }
+    .modal-body { padding: 20px; font-size: 13px; line-height: 1.7; color: #444; }
+    .modal-body .row { margin-bottom: 12px; }
+    .modal-body .row .k { color: #888; margin-bottom: 4px; font-size: 12px; }
+    .modal-body .row .v { background: #f7f7f9; padding: 10px 12px; border-radius: 4px; white-space: pre-wrap; word-break: break-all; }
+    .modal-footer { padding: 12px 20px; text-align: right; border-top: 1px solid #eee; }
+    .modal-footer button { background: #ff5252; color: #fff; border: 0; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    .modal-footer button.ghost { background: #fff; color: #ff5252; border: 1px solid #ff5252; margin-right: 8px; }
+
+    .loading { padding: 40px; text-align: center; color: #999; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 11px; background: #f5f5f5; color: #666; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎯 骂醒了么 · 运营后台</h1>
+  <div class="actions">
+    <span id="providerInfo" style="opacity:.9"></span>
+    <button onclick="logout()">注销</button>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-tab="overview" onclick="switchTab('overview')">📊 概览</div>
+  <div class="tab" data-tab="cards" onclick="switchTab('cards')">🎴 卡片数据</div>
+  <div class="tab" data-tab="records" onclick="switchTab('records')">💬 用户吐槽</div>
+  <div class="tab" data-tab="provider" onclick="switchTab('provider')">⚙️ Provider</div>
+</div>
+
+<main>
+
+  <!-- 概览 -->
+  <section id="tab-overview" class="tab-content active">
+    <div class="cards" id="overviewCards"><div class="loading">加载中...</div></div>
+  </section>
+
+  <!-- 卡片数据 -->
+  <section id="tab-cards" class="tab-content">
+    <div class="toolbar">
+      <label>时间范围：
+        <select id="cardsDays" onchange="loadCards()">
+          <option value="1">今天</option>
+          <option value="7" selected>近 7 天</option>
+          <option value="30">近 30 天</option>
+          <option value="90">近 90 天</option>
+        </select>
+      </label>
+      <button onclick="loadCards()">刷新</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>模板</th>
+            <th class="num">生成</th>
+            <th class="num">保存</th>
+            <th class="num">分享</th>
+            <th class="num">保存率</th>
+            <th class="num">分享率</th>
+          </tr>
+        </thead>
+        <tbody id="cardsTbody">
+          <tr><td colspan="6" class="empty">加载中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 用户吐槽 -->
+  <section id="tab-records" class="tab-content">
+    <div class="toolbar">
+      <label>时间：
+        <select id="recDays" onchange="loadRecords(1)">
+          <option value="0">全部</option>
+          <option value="1">今天</option>
+          <option value="7" selected>近 7 天</option>
+          <option value="30">近 30 天</option>
+        </select>
+      </label>
+      <label>风格：
+        <select id="recStyle" onchange="loadRecords(1)">
+          <option value="">全部</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="recFav" onchange="loadRecords(1)"> 仅收藏</label>
+      <button onclick="loadRecords(1)">刷新</button>
+      <div style="flex:1"></div>
+      <span style="color:#999;font-size:12px">🔒 openid / 手机号已脱敏</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:130px">时间</th>
+            <th style="width:110px">用户</th>
+            <th style="width:80px">风格</th>
+            <th>用户输入</th>
+            <th>AI 回复</th>
+            <th style="width:80px">操作</th>
+          </tr>
+        </thead>
+        <tbody id="recTbody">
+          <tr><td colspan="6" class="empty">加载中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pager">
+      <button id="recPrev" onclick="loadRecords(recPage - 1)">上一页</button>
+      <span class="info" id="recPageInfo">-</span>
+      <button id="recNext" onclick="loadRecords(recPage + 1)">下一页</button>
+    </div>
+  </section>
+
+  <!-- Provider -->
+  <section id="tab-provider" class="tab-content">
+    <div class="provider-list" id="providerList">
+      <div class="loading">加载中...</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 记录详情弹窗 -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>吐槽详情</h3>
+      <span class="close" onclick="closeModal()">×</span>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="loading">加载中...</div>
+    </div>
+    <div class="modal-footer">
+      <button class="ghost" id="btnToggleFull" onclick="toggleFullMode()">查看完整内容</button>
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ 认证 ============
+let TOKEN = localStorage.getItem('mxlm_admin_token') || '';
+if (!TOKEN) {
+  TOKEN = prompt('请输入 Admin Token：') || '';
+  if (TOKEN) localStorage.setItem('mxlm_admin_token', TOKEN);
+}
+
+function logout() {
+  localStorage.removeItem('mxlm_admin_token');
+  location.reload();
+}
+
+async function api(path, opts) {
+  opts = opts || {};
+  const headers = Object.assign({ 'X-Admin-Token': TOKEN }, opts.headers || {});
+  const resp = await fetch(path, Object.assign({}, opts, { headers }));
+  const json = await resp.json();
+  if (json.code === 401) {
+    alert('鉴权失败，请重新登录');
+    logout();
+    throw new Error('unauthorized');
+  }
+  if (json.code !== 0) throw new Error(json.message || '接口异常');
+  return json.data;
+}
+
+// ============ Tab 切换 ============
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', el.dataset.tab === name));
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === 'tab-' + name));
+  if (name === 'overview') loadOverview();
+  if (name === 'cards') loadCards();
+  if (name === 'records') loadRecords(1);
+  if (name === 'provider') loadProviders();
+}
+
+// ============ 概览 ============
+async function loadOverview() {
+  const box = document.getElementById('overviewCards');
+  try {
+    const d = await api('/admin/overview');
+    document.getElementById('providerInfo').textContent = `当前 Provider: ${d.activeProvider} / 兜底: ${d.fallbackProvider || '-'}`;
+    box.innerHTML = `
+      <div class="card"><div class="label">总用户</div><div class="value">${d.totalUsers}</div><div class="sub">去重 openid</div></div>
+      <div class="card"><div class="label">总骂醒</div><div class="value">${d.totalRoasts}</div><div class="sub">累计生成条数</div></div>
+      <div class="card"><div class="label">今日骂醒</div><div class="value">${d.todayRoasts}</div><div class="sub">${d.today}</div></div>
+      <div class="card"><div class="label">总收藏</div><div class="value">${d.totalFavorites}</div><div class="sub">跨用户合计</div></div>
+      <div class="card"><div class="label">今日新增用户</div><div class="value">${d.todayNewUsers}</div><div class="sub">首次骂醒 = 新用户</div></div>
+    `;
+  } catch (e) {
+    box.innerHTML = `<div class="empty">加载失败：${e.message}</div>`;
+  }
+}
+
+// ============ 卡片数据 ============
+async function loadCards() {
+  const days = document.getElementById('cardsDays').value;
+  const tbody = document.getElementById('cardsTbody');
+  tbody.innerHTML = '<tr><td colspan="6" class="empty">加载中...</td></tr>';
+  try {
+    const d = await api('/admin/card/stats?days=' + days);
+    if (!d.list || d.list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">暂无数据</td></tr>';
+      return;
+    }
+    tbody.innerHTML = d.list.map(r => `
+      <tr>
+        <td>${r.templateName || r.template} <span class="tag">${r.template}</span></td>
+        <td class="num">${r.generate}</td>
+        <td class="num">${r.save}</td>
+        <td class="num">${r.share}</td>
+        <td class="num">${(r.saveRate * 100).toFixed(1)}%</td>
+        <td class="num">${(r.shareRate * 100).toFixed(1)}%</td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">加载失败：${e.message}</td></tr>`;
+  }
+}
+
+// ============ 用户吐槽 ============
+let recPage = 1;
+const REC_SIZE = 20;
+let recTotal = 0;
+
+async function loadRecordsMeta() {
+  try {
+    const meta = await api('/admin/meta');
+    const sel = document.getElementById('recStyle');
+    sel.innerHTML = '<option value="">全部</option>' +
+      meta.styles.map(s => `<option value="${s.key}">${s.emoji} ${s.name}</option>`).join('');
+  } catch (e) {}
+}
+
+async function loadRecords(page) {
+  if (page < 1) return;
+  recPage = page;
+  const days = document.getElementById('recDays').value;
+  const style = document.getElementById('recStyle').value;
+  const fav = document.getElementById('recFav').checked;
+  const tbody = document.getElementById('recTbody');
+  tbody.innerHTML = '<tr><td colspan="6" class="empty">加载中...</td></tr>';
+  try {
+    const qs = new URLSearchParams({
+      page: recPage,
+      size: REC_SIZE,
+      days: days,
+      favorited: fav ? 'true' : 'false',
+    });
+    if (style) qs.set('style', style);
+    const d = await api('/admin/records?' + qs.toString());
+    recTotal = d.total;
+    if (!d.list || d.list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">暂无数据</td></tr>';
+    } else {
+      tbody.innerHTML = d.list.map(r => `
+        <tr>
+          <td>${formatTime(r.createdAt)}</td>
+          <td><code style="font-size:12px;color:#666">${r.openidMasked}</code></td>
+          <td>${r.style.emoji} ${r.style.name}</td>
+          <td>${escapeHtml(r.userInputPreview)}</td>
+          <td>${escapeHtml(r.contentPreview)}</td>
+          <td><button style="background:#fff;border:1px solid #ddd;padding:4px 10px;border-radius:3px;cursor:pointer;font-size:12px" onclick="showDetail('${r.roastId}')">详情</button></td>
+        </tr>
+      `).join('');
+    }
+    // 分页
+    const totalPages = Math.max(1, Math.ceil(recTotal / REC_SIZE));
+    document.getElementById('recPageInfo').textContent = `第 ${recPage} / ${totalPages} 页 · 共 ${recTotal} 条`;
+    document.getElementById('recPrev').disabled = recPage <= 1;
+    document.getElementById('recNext').disabled = !d.hasMore;
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">加载失败：${e.message}</td></tr>`;
+  }
+}
+
+// 详情弹窗
+let currentRecordId = null;
+let currentFullMode = false;
+
+async function showDetail(roastId) {
+  currentRecordId = roastId;
+  currentFullMode = false;
+  document.getElementById('modalMask').classList.add('show');
+  document.getElementById('btnToggleFull').textContent = '查看完整内容';
+  await loadDetail();
+}
+
+async function loadDetail() {
+  const body = document.getElementById('modalBody');
+  body.innerHTML = '<div class="loading">加载中...</div>';
+  try {
+    const d = await api(`/admin/records/${currentRecordId}?full=${currentFullMode ? 1 : 0}`);
+    body.innerHTML = `
+      <div class="row"><div class="k">Roast ID</div><div class="v"><code>${d.roastId}</code></div></div>
+      <div class="row"><div class="k">用户（脱敏）</div><div class="v">${d.openidMasked}</div></div>
+      <div class="row"><div class="k">时间 / 风格 / Provider</div><div class="v">${formatTime(d.createdAt)} · ${d.style.emoji} ${d.style.name} · ${d.provider || '-'}</div></div>
+      <div class="row"><div class="k">用户输入</div><div class="v">${escapeHtml(d.userInput || '(空)')}</div></div>
+      <div class="row"><div class="k">AI 回复</div><div class="v">${escapeHtml(d.content || '(空)')}</div></div>
+      <div class="row"><div class="k">被收藏次数</div><div class="v">${d.favoriteCount}</div></div>
+      ${d.isFullMode ? '<div class="row" style="color:#d32f2f;font-size:12px">⚠️ 当前显示完整内容（仍打码手机号/身份证等敏感数字）</div>' : ''}
+    `;
+  } catch (e) {
+    body.innerHTML = `<div class="empty">加载失败：${e.message}</div>`;
+  }
+}
+
+function toggleFullMode() {
+  currentFullMode = !currentFullMode;
+  document.getElementById('btnToggleFull').textContent = currentFullMode ? '收起完整内容' : '查看完整内容';
+  loadDetail();
+}
+
+function closeModal() {
+  document.getElementById('modalMask').classList.remove('show');
+  currentRecordId = null;
+  currentFullMode = false;
+}
+
+// ============ Provider ============
+async function loadProviders() {
+  const box = document.getElementById('providerList');
+  try {
+    const list = await api('/admin/ai/providers');
+    box.innerHTML = list.map(p => `
+      <div class="provider-item ${p.isActive ? 'active' : ''}">
+        <div class="provider-name">${p.name} <span style="color:#999;font-size:12px">${p.key}</span></div>
+        <div>
+          ${p.isActive ? '<span class="provider-badge badge-active">主力</span>' : ''}
+          ${p.isFallback ? '<span class="provider-badge badge-fallback">兜底</span>' : ''}
+          ${p.available ? '' : '<span class="provider-badge badge-off">未启用</span>'}
+        </div>
+        <div class="provider-actions">
+          <button ${p.isActive || !p.available ? 'disabled' : ''} onclick="setActive('${p.key}')">设为主力</button>
+          <button ${p.isFallback || !p.available ? 'disabled' : ''} onclick="setFallback('${p.key}')">设为兜底</button>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    box.innerHTML = `<div class="empty">加载失败：${e.message}</div>`;
+  }
+}
+
+async function setActive(key) {
+  try {
+    await api('/admin/ai/switch', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ providerKey: key }) });
+    alert('已切换主力 Provider');
+    loadProviders();
+    loadOverview();
+  } catch (e) { alert('切换失败：' + e.message); }
+}
+
+async function setFallback(key) {
+  try {
+    await api('/admin/ai/switch-fallback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ providerKey: key }) });
+    alert('已切换兜底 Provider');
+    loadProviders();
+    loadOverview();
+  } catch (e) { alert('切换失败：' + e.message); }
+}
+
+// ============ 工具 ============
+function formatTime(ts) {
+  const d = new Date(ts * 1000);
+  const pad = n => n < 10 ? '0' + n : '' + n;
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// 初始化
+loadRecordsMeta();
+loadOverview();
+</script>
+</body>
+</html>

@@ -8,13 +8,14 @@ Page({
     styles: [],
     selectedStyle: 'yiju',
     loading: false,
+    loadingTip: '正在骂醒你...',
     examples: [
       '前任又来找我了，我心动了怎么办',
-      '想剁手买 3000 块的包，但这个月工资才 5000',
+      '想剥手买 3000 块的包，但这个月工资才 5000',
       '论文还没开题就想摆烂了',
       '凌晨 2 点还在刷手机，明天又要迟到',
       '想吃夜宵了，就一口不算破戒吧？',
-      '领导又 PUA 我，我要不要辞职'
+      '又加班到 10 点，感觉自己在为爱发电'
     ]
   },
 
@@ -90,7 +91,16 @@ Page({
       wx.showToast({ title: '先告诉我你的烦恼吧', icon: 'none' })
       return
     }
-    this.setData({ loading: true })
+    // 随机 loading 文案，避免单一
+    const loadingTips = [
+      '正在骂醒你...',
+      'AI 正在醍酿一记暴击...',
+      '深呼吸，马上骂到...',
+      '正在挑选骂你的角度...',
+      '醒醒醒，马上到...'
+    ]
+    const tip = loadingTips[Math.floor(Math.random() * loadingTips.length)]
+    this.setData({ loading: true, loadingTip: tip })
 
     api.roast(input, this.data.selectedStyle).then((result) => {
       this.setData({ loading: false })
@@ -142,9 +152,9 @@ Page({
   },
 
   /**
-   * 页脚跳转 - 关于
+   * 页脚跳转 - 关于（tabBar 页面用 switchTab）
    */
   onNavAbout() {
-    wx.navigateTo({ url: '/pages/about/about' })
+    wx.switchTab({ url: '/pages/about/about' })
   }
 })

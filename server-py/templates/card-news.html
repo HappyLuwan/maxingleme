@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 社论快报</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 750px;
+            height: 1000px;
+            font-family: 'Times New Roman', 'Songti SC', 'STSong', serif;
+            -webkit-font-smoothing: antialiased;
+            background: #ede4d1;
+        }
+
+        .card {
+            width: 750px;
+            height: 1000px;
+            padding: 50px 54px 44px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 30% 25%, rgba(150, 120, 80, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 75% 80%, rgba(150, 120, 80, 0.04) 0%, transparent 40%),
+                #efe6d3;
+            color: #1a1a1a;
+        }
+
+        /* ==== 报头 ==== */
+        .masthead {
+            border-top: 4px double #1a1a1a;
+            border-bottom: 1px solid #1a1a1a;
+            padding: 12px 0 8px;
+            text-align: center;
+        }
+
+        .masthead-en {
+            font-family: 'Times New Roman', serif;
+            font-size: 22px;
+            letter-spacing: 12px;
+            color: #6a5030;
+            margin-bottom: 6px;
+            font-style: italic;
+        }
+
+        .masthead-cn {
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', serif;
+            font-size: 68px;
+            font-weight: 900;
+            letter-spacing: 18px;
+            color: #1a1a1a;
+            line-height: 1;
+        }
+
+        .masthead-en2 {
+            font-family: 'Times New Roman', serif;
+            font-size: 20px;
+            letter-spacing: 8px;
+            color: #6a5030;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* ==== 元信息条 ==== */
+        .meta-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            color: #4a3a20;
+            letter-spacing: 2px;
+            padding: 8px 4px 10px;
+            border-bottom: 2px solid #1a1a1a;
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+        }
+
+        /* ==== 头版标题 ==== */
+        .category {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #efe6d3;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            padding: 4px 14px;
+            margin-bottom: 22px;
+        }
+
+        .headline {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        .headline-text {
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', 'STSong', serif;
+            font-weight: 900;
+            font-size: 60px;
+            line-height: 1.5;
+            letter-spacing: 3px;
+            color: #1a1a1a;
+        }
+
+        .headline-text.medium { font-size: 50px; line-height: 1.55; }
+        .headline-text.long { font-size: 40px; line-height: 1.6; }
+
+        .headline-text::first-letter {
+            font-size: 1.15em;
+            color: #c8302a;
+        }
+
+        /* ==== 副标 / 引言 ==== */
+        .dek {
+            font-family: 'STSong', 'Songti SC', serif;
+            font-size: 22px;
+            color: #4a3a20;
+            line-height: 1.6;
+            letter-spacing: 2px;
+            margin-top: 24px;
+            padding: 14px 20px;
+            border-left: 4px solid #c8302a;
+            background: rgba(200, 48, 42, 0.04);
+            font-style: italic;
+        }
+
+        /* ==== 分栏装饰 & 底部 ==== */
+        .rule-thick {
+            height: 2px;
+            background: #1a1a1a;
+            margin: 22px 0 14px;
+        }
+
+        .byline {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-family: 'Georgia', 'Songti SC', serif;
+            font-size: 20px;
+            color: #4a3a20;
+            letter-spacing: 2px;
+        }
+
+        .byline .b-name strong {
+            font-family: 'STKaiti', serif;
+            color: #c8302a;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .byline .b-serial {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="masthead">
+        <div class="masthead-en">— DAILY EDITION · MIDNIGHT COLUMN —</div>
+        <div class="masthead-cn">社 论 快 报</div>
+        <div class="masthead-en2">THE CLARITY TIMES</div>
+    </div>
+
+    <div class="meta-bar">
+        <div>VOL. {{ dateStr[:4] }} · No.{{ serialNo[3:] }}</div>
+        <div>{{ dateStr }} · {{ timeStr }} · {{ ganzhiYear }}</div>
+    </div>
+
+    <div class="category">◆ 头版 · {{ styleName }}专栏</div>
+
+    <div class="headline">
+        <div class="headline-text {% if contentLength > 35 %}long{% elif contentLength > 20 %}medium{% endif %}">{{ content }}</div>
+
+        <div class="dek">
+            据本报深夜观察员匿名报道：主人公在结束一天的挣扎后，被 AI 一句话击中要害，当场清醒。事件已引发广泛共鸣，转发者众。
+        </div>
+    </div>
+
+    <div class="rule-thick"></div>
+    <div class="byline">
+        <div class="b-name">本报特约评论员：<strong>AI</strong></div>
+        <div class="b-serial">Edition #{{ serialNo }}</div>
+    </div>
+</div>
+</body>
+</html>

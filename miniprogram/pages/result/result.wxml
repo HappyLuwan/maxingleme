@@ -1,9 +1,14 @@
 <!-- pages/result/result.wxml -->
 <view class="page">
-  <!-- 顶部风格标签 -->
-  <view class="style-tag">
-    <text class="tag-emoji">{{roast.styleEmoji}}</text>
-    <text class="tag-name">{{roast.styleName}}·骂醒版</text>
+  <!-- 顶部风格标签 + 收藏按钮 -->
+  <view class="style-tag-row">
+    <view class="style-tag">
+      <text class="tag-emoji">{{roast.styleEmoji}}</text>
+      <text class="tag-name">{{roast.styleName}} 风</text>
+    </view>
+    <view class="fav-toggle {{isFavorite ? 'faved' : ''}}" bindtap="onToggleFavorite">
+      <text>{{isFavorite ? '❤ 已收藏' : '♡ 收藏'}}</text>
+    </view>
   </view>
 
   <!-- 主内容：AI 骂醒文案 -->
@@ -26,43 +31,42 @@
   <view class="template-wrap">
     <view class="input-label">
       <text class="dot"></text>
-      <text>选一个卡片风格</text>
+      <text>选一个卡片风格（点击即换）</text>
     </view>
-    <view class="template-grid">
-      <view wx:for="{{templates}}"
-            wx:key="key"
-            class="template-item {{selectedTemplate === item.key ? 'active' : ''}}"
-            data-key="{{item.key}}"
-            bindtap="onSelectTemplate">
-        <view class="template-icon">{{item.icon}}</view>
-        <view class="template-name">{{item.name}}</view>
+    <scroll-view class="template-scroll" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <view class="template-list">
+        <view wx:for="{{templates}}"
+              wx:key="key"
+              class="template-item {{selectedTemplate === item.key ? 'active' : ''}} {{generatingCard && selectedTemplate === item.key ? 'loading' : ''}}"
+              data-key="{{item.key}}"
+              bindtap="onSelectTemplate">
+          <view class="template-icon">{{item.icon}}</view>
+          <view class="template-name">{{item.name}}</view>
+        </view>
       </view>
-    </view>
+    </scroll-view>
   </view>
 
   <!-- 操作按钮 -->
   <view class="actions">
+    <!-- 主 CTA：分享 -->
     <button class="g-btn primary-btn"
-            disabled="{{generatingCard}}"
-            bindtap="onGenerateCard">
-      {{generatingCard ? '生成中...' : (cardImageUrl ? '🎨 换个卡片' : '🎨 生成分享卡片')}}
+            open-type="share">
+      📤 分享给朋友
     </button>
 
-    <view class="secondary-actions">
-      <button class="g-btn-ghost half"
+    <!-- 次级操作：保存 + 再来一次（同一行） -->
+    <view class="btn-row">
+      <button class="g-btn-ghost row-btn"
               wx:if="{{cardImageUrl}}"
               bindtap="onSaveImage">
-        📥 保存图片
+        📥 保存到相册
       </button>
-      <button class="g-btn-ghost {{cardImageUrl ? 'half' : 'full'}}"
-              open-type="share">
-        📤 分享给朋友
+
+      <button class="g-btn-ghost row-btn again-btn" bindtap="onAgain">
+        🔥 换个烦恼
       </button>
     </view>
-
-    <button class="g-btn-ghost full again-btn" bindtap="onAgain">
-      🔥 再骂一次
-    </button>
 
     <view class="disclaimer">
       ⚠️ 内容由 AI 生成，不构成任何专业建议，危险情况请寻求救助

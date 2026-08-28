@@ -1,9 +1,12 @@
 """
-内容安全服务：本地敏感词过滤 + 心理危机词汇引导
-对应 Java 的 ContentSecurityService
+内容安全服务：本地敏感词过滤 + 心理危机词汇引导 + 微信 msgSecCheck 双保险
 
-⚠️ 注意：本地词库仅是最后一道兜底，正式上线时建议接入微信内容安全接口
-(security.msgSecCheck) 做双重过滤。
+优先级：
+1) 本地心理危机词库（命中直接给援助电话，不走 AI、不写库）
+2) 本地敏感词黑名单（政治/色情/暴力/辱骂，命中直接拒绝）
+3) 微信 msgSecCheck 官方内容安全接口（兜底，拦截长尾变体）
+
+⚠️ msgSecCheck 免费但需要 openid，云托管环境下无需自管 access_token。
 """
 from __future__ import annotations
 
@@ -14,7 +17,6 @@ from typing import Optional
 from app.config import settings
 
 logger = logging.getLogger(__name__)
-
 
 # ============ 分类敏感词库 ============
 # 政治敏感（国家领导人、境外反华、分裂势力）—— 直接拒绝
@@ -44,10 +46,24 @@ _CRIME = [
     "洗钱", "传销",
 ]
 
-# 心理危机（需要专业干预 —— 不是拒绝，而是给出援助电话）
+# ---------- 心理危机词库（Layer 1：明确、无误杀） ----------
+# 命中后不是拒绝，而是给出援助电话；不走 AI、不写库
+# ⚠️ 只放"高置信度"表达，避免误伤"笑死我了""该死"等日常吐槽
 _CRISIS_WORDS = {
-    "想死", "不想活", "轻生", "跳楼", "割腕", "自杀", "自残",
-    "结束生命", "活不下去", "了结自己", "上吊",
+    # —— 明确自杀意图
+    "想死", "我想死", "我要死", "要死了我", "想不开", "寻短见",
+    "自杀", "轻生", "了结自己", "了结生命", "结束生命", "结束自己",
+    "结束一切", "结束这一切", "一了百了", "以死解脱",
+    # —— 自伤/自残
+    "自残", "自伤", "割腕", "割脉", "自缢", "上吊",
+    # —— 具体自杀方式
+    "跳楼", "跳桥", "跳江", "跳河", "跳海", "烧炭", "安眠药自杀",
+    # —— 无望感表达
+    "不想活", "不想活了", "不想活着", "活不下去", "活着没意思",
+    "活着好累", "生无可恋", "了无生趣",
+    "想消失", "彻底消失", "从这个世界消失", "离开这个世界",
+    # —— 抑郁+死亡组合（网络高频表达）
+    "抑郁到想死", "抑郁死了想死", "emo到想死",
 }
 
 # 辱骂/人身攻击（避免 AI 被引导输出攻击性内容）
@@ -66,22 +82,23 @@ class CheckResult:
     crisis: bool = False
     hit_word: Optional[str] = None
     message: Optional[str] = None
+    source: Optional[str] = None  # local | wxapi
 
     @classmethod
     def pass_(cls) -> "CheckResult":
         return cls(passed=True)
 
     @classmethod
-    def block(cls, word: str) -> "CheckResult":
+    def block(cls, word: str, source: str = "local") -> "CheckResult":
         return cls(
-            passed=False, crisis=False, hit_word=word,
+            passed=False, crisis=False, hit_word=word, source=source,
             message="话里带了不太合适的词，换个说法试试？",
         )
 
     @classmethod
     def crisis_result(cls, word: str) -> "CheckResult":
         return cls(
-            passed=False, crisis=True, hit_word=word,
+            passed=False, crisis=True, hit_word=word, source="local",
             message=(
                 "看到你的话，我很担心你。请一定要联系专业的心理援助：\n"
                 "· 全国心理援助热线 400-161-9995\n"
@@ -91,24 +108,49 @@ class CheckResult:
         )
 
 
-def check_content(text: str) -> CheckResult:
-    """检测用户输入是否安全"""
+def check_content(text: str, openid: Optional[str] = None) -> CheckResult:
+    """
+    检测用户输入是否安全（双保险）：
+    1) 本地危机词库（优先，给援助电话）
+    2) 本地敏感词黑名单（快速拒绝）
+    3) 微信 msgSecCheck（兜底，需要 openid；失败降级放行避免误杀）
+    """
     if not text or not settings.content_security_enabled:
         return CheckResult.pass_()
 
     lower = text.lower()
-    # 优先检测心理危机词（给援助信息而非简单拒绝）
+    # 1) 优先检测心理危机词
     for word in _CRISIS_WORDS:
         if word.lower() in lower:
             logger.warning("[ContentSecurity] 心理危机词命中: %s", word)
             return CheckResult.crisis_result(word)
 
-    # 再检测其他敏感词
+    # 2) 再检测其他敏感词
     for word in _BLACKLIST:
         if word in _CRISIS_WORDS:
             continue  # 已在上面处理
         if word.lower() in lower:
             preview = text[:30]
-            logger.warning("[ContentSecurity] 命中敏感词: %s, preview: %s", word, preview)
-            return CheckResult.block(word)
+            logger.warning("[ContentSecurity] 命中本地敏感词: %s, preview: %s", word, preview)
+            return CheckResult.block(word, source="local")
+
+    # 3) 微信 msgSecCheck 兜底（仅在启用 + 有 openid 时）
+    if settings.wx_msg_sec_check_enabled and openid:
+        try:
+            # 延迟导入避免循环依赖
+            from app.wechat_security import check_by_wxapi
+
+            wx_res = check_by_wxapi(text, openid)
+            if wx_res is not None and not wx_res.passed:
+                logger.warning(
+                    "[ContentSecurity] msgSecCheck 拦截: label=%s suggest=%s",
+                    wx_res.label, wx_res.suggest,
+                )
+                return CheckResult.block(
+                    wx_res.label or "wxapi", source="wxapi",
+                )
+        except Exception as exc:  # noqa: BLE001
+            # 兜底策略：微信 API 异常时**放行**，不影响主链路
+            logger.warning("[ContentSecurity] msgSecCheck 异常，降级放行: %s", exc)
+
     return CheckResult.pass_()

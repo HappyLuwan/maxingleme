@@ -1,6 +1,5 @@
 """
 应用配置：AI Provider 配置、卡片配置、管理员配置等
-对应 Java 版 application.yml + AIProperties + AIRuntimeConfig
 """
 from __future__ import annotations
 
@@ -88,6 +87,10 @@ class Settings(BaseSettings):
 
     # ---------- 内容安全 ----------
     content_security_enabled: bool = True
+    # 微信 msgSecCheck 兜底开关（云托管环境默认开启；本地开发建议关掉避免误报）
+    wx_msg_sec_check_enabled: bool = Field(
+        default=True, alias="WX_MSG_SEC_CHECK_ENABLED"
+    )
 
     def provider_config(self, key: str) -> Optional[ProviderConfig]:
         """按 provider key 获取配置对象"""

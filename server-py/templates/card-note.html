@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>骂醒了么 · 便利贴纸</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 750px;
+            height: 1000px;
+            font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background: #e8e5df;
+        }
+
+        .card {
+            width: 750px;
+            height: 1000px;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(120, 100, 80, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(120, 100, 80, 0.05) 0%, transparent 40%),
+                #eae7e1;
+        }
+
+        /* ==== 便签纸 ==== */
+        .note {
+            flex: 1;
+            background: #fff8d8;
+            border-radius: 4px;
+            padding: 60px 50px 50px;
+            position: relative;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.12),
+                0 4px 8px rgba(0, 0, 0, 0.06),
+                inset 0 0 40px rgba(180, 150, 80, 0.06);
+            transform: rotate(-1.2deg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部胶带 */
+        .tape {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%) rotate(3deg);
+            width: 180px;
+            height: 44px;
+            background: rgba(180, 200, 220, 0.55);
+            border: 1px dashed rgba(120, 140, 170, 0.4);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 折角 */
+        .fold {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, transparent 50%, rgba(180, 150, 80, 0.2) 50%);
+            border-bottom-right-radius: 4px;
+        }
+
+        /* ==== 抬头 ==== */
+        .note-head {
+            margin-bottom: 26px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed rgba(80, 60, 30, 0.25);
+        }
+
+        .to-line {
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', serif;
+            font-size: 36px;
+            color: #3a2a10;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 6px;
+        }
+
+        .to-line em {
+            font-style: normal;
+            color: #c8302a;
+            margin: 0 4px;
+        }
+
+        .date-line {
+            font-family: 'Georgia', 'PingFang SC', serif;
+            font-size: 20px;
+            color: rgba(80, 60, 30, 0.65);
+            letter-spacing: 2px;
+        }
+
+        /* ==== 便签正文 ==== */
+        .note-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .quote-mark {
+            font-family: 'Georgia', serif;
+            font-size: 90px;
+            color: rgba(200, 48, 42, 0.35);
+            line-height: 0.6;
+            margin-bottom: 10px;
+        }
+
+        .body-text {
+            font-family: 'STKaiti', 'KaiTi', 'Songti SC', 'STSong', serif;
+            font-weight: 700;
+            font-size: 46px;
+            line-height: 1.75;
+            letter-spacing: 3px;
+            color: #2a1a08;
+        }
+
+        .body-text.medium { font-size: 38px; line-height: 1.75; }
+        .body-text.long { font-size: 32px; line-height: 1.8; }
+
+        .body-text::first-letter {
+            color: #c8302a;
+            font-size: 1.1em;
+        }
+
+        /* ==== 签名 ==== */
+        .sign-block {
+            margin-top: 40px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .sign-from {
+            font-size: 22px;
+            color: rgba(80, 60, 30, 0.6);
+            letter-spacing: 2px;
+        }
+
+        .sign-name {
+            font-family: 'STKaiti', 'KaiTi', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #c8302a;
+            letter-spacing: 3px;
+            border-bottom: 2px solid rgba(200, 48, 42, 0.4);
+            padding-bottom: 2px;
+        }
+
+        /* ==== 底部编号 ==== */
+        .note-serial {
+            margin-top: 18px;
+            font-family: 'Georgia', serif;
+            font-size: 18px;
+            color: rgba(80, 60, 30, 0.4);
+            letter-spacing: 3px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="note">
+        <div class="tape"></div>
+
+        <div class="note-head">
+            <div class="to-line">To. <em>此刻</em>的你</div>
+            <div class="date-line">{{ dateStr }} · {{ timeStr }} · {{ ganzhiYear }}</div>
+        </div>
+
+        <div class="note-body">
+            <div class="quote-mark">"</div>
+            <div class="body-text {% if contentLength > 35 %}long{% elif contentLength > 20 %}medium{% endif %}">{{ content }}</div>
+
+            <div class="sign-block">
+                <div class="sign-from">— from</div>
+                <div class="sign-name">AI · {{ styleName }}</div>
+            </div>
+        </div>
+
+        <div class="note-serial">Memo #{{ serialNo }}</div>
+
+        <div class="fold"></div>
+    </div>
+</div>
+</body>
+</html>

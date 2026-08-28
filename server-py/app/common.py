@@ -1,6 +1,5 @@
 """
 统一响应模型、错误码、业务异常
-对应 Java 的 Result / ErrorCode / BusinessException / GlobalExceptionHandler
 """
 from __future__ import annotations
 
@@ -14,7 +13,7 @@ T = TypeVar("T")
 
 
 class Result(BaseModel, Generic[T]):
-    """统一响应格式（与 Java 版兼容，前端无需改动）"""
+    """统一响应格式"""
     code: int = 0
     message: str = "success"
     data: Optional[Any] = None
@@ -29,7 +28,7 @@ class Result(BaseModel, Generic[T]):
 
 
 class ErrorCode:
-    """错误码常量（与 Java 版对齐）"""
+    """错误码常量"""
     SUCCESS = 0
     PARAM_ERROR = 400
     UNAUTHORIZED = 401
@@ -45,6 +44,10 @@ class ErrorCode:
     AI_ALL_PROVIDERS_FAILED = 2004
     CARD_ROAST_NOT_FOUND = 3001
     CARD_GENERATE_FAILED = 3002
+    # 用户体系
+    RATE_LIMIT_EXCEEDED = 4001       # 每日限流
+    FAVORITE_ALREADY = 4002          # 已收藏
+    FAVORITE_NOT_FOUND = 4003        # 未收藏
 
 
 class BusinessException(Exception):
@@ -61,7 +64,7 @@ async def business_exception_handler(
 ) -> JSONResponse:
     """全局业务异常处理"""
     return JSONResponse(
-        status_code=200,  # 与 Java 版保持一致：HTTP 200 + code 区分成功失败
+        status_code=200,  # 统一约定：HTTP 200 + code 区分成功失败
         content=Result.error(exc.code, exc.message).model_dump(),
     )
 
