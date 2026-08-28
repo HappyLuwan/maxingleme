@@ -25,7 +25,7 @@ Page({
       styleEmoji: ''
     },
     templates: TEMPLATES,
-    selectedTemplate: 'tarot',
+    selectedTemplate: '',      // 空表示未选，用户主动点后再生成，减少首屏等待
     generatingCard: false,
     cardImageUrl: '',
     isFavorite: false
@@ -35,10 +35,8 @@ Page({
     // 从本地缓存拿骂醒数据（首页存的）
     const roast = wx.getStorageSync('lastRoast')
     if (roast && roast.roastId === options.roastId) {
-      // 默认塔罗指引（首屏最抓眼的卡片）
       this.setData({ roast })
-      // 自动生成默认卡片，省去用户手动点击一次
-      this.onGenerateCard()
+      // 注意：不再自动生成卡片，用户读完文案主动选风格再生成，避免首屏等待
       // 同时拉取收藏状态（不阻塞主流程）
       this.loadFavoriteStatus(options.roastId)
     } else {

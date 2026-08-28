@@ -1,6 +1,19 @@
 // pages/index/index.js
 const api = require('../../utils/api')
 
+// Loading 提示文案候选（严格 5 汉字 + ...，防止按钮内折行）
+const LOADING_TIPS = [
+  '正在骂醒中...',
+  '拳头准备中...',
+  '灵魂拷问中...',
+  '别催了别催...',
+  '醒神汤煎中...'
+]
+
+function pickLoadingTip() {
+  return LOADING_TIPS[Math.floor(Math.random() * LOADING_TIPS.length)]
+}
+
 Page({
   data: {
     userInput: '',
@@ -8,7 +21,7 @@ Page({
     styles: [],
     selectedStyle: 'yiju',
     loading: false,
-    loadingTip: '正在骂醒你...',
+    loadingTip: '正在骂醒中...',
     examples: [
       '前任又来找我了，我心动了怎么办',
       '想剥手买 3000 块的包，但这个月工资才 5000',
@@ -91,16 +104,8 @@ Page({
       wx.showToast({ title: '先告诉我你的烦恼吧', icon: 'none' })
       return
     }
-    // 随机 loading 文案，避免单一
-    const loadingTips = [
-      '正在骂醒你...',
-      'AI 正在醍酿一记暴击...',
-      '深呼吸，马上骂到...',
-      '正在挑选骂你的角度...',
-      '醒醒醒，马上到...'
-    ]
-    const tip = loadingTips[Math.floor(Math.random() * loadingTips.length)]
-    this.setData({ loading: true, loadingTip: tip })
+    // 从候选池随机挑一条 5 字文案，既保持趣味性又不会折行
+    this.setData({ loading: true, loadingTip: pickLoadingTip() })
 
     api.roast(input, this.data.selectedStyle).then((result) => {
       this.setData({ loading: false })

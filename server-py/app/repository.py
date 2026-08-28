@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 # ---------- 业务策略常量 ----------
 HISTORY_RETENTION_DAYS = 90         # 历史记录保留 90 天
 HISTORY_MAX_PER_USER = 500          # 单用户最多 500 条历史
-DAILY_ROAST_LIMIT = 30              # 每人每天最多 30 次骂醒
+DAILY_ROAST_LIMIT = 20              # 每人每天最多 20 次骂醒（成本可控 + 珍惜感）
 
 
 @dataclass

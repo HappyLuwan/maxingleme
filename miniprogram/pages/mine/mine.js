@@ -126,9 +126,32 @@ Page({
   onLongPressItem(e) {
     if (this.data.activeTab !== 'history') return
     const roastId = e.currentTarget.dataset.id
+    this._confirmDelete(roastId)
+  },
+
+  /**
+   * 点击删除按钮（历史/收藏两个 Tab 都可用）
+   */
+  onDeleteItem(e) {
+    e.stopPropagation && e.stopPropagation()
+    const roastId = e.currentTarget.dataset.id
+    this._confirmDelete(roastId)
+  },
+
+  /**
+   * 统一的删除弹窗 + 调用逻辑
+   * - 删除会同时把 roast 记录和对应收藏一起清（后端已做联动）
+   * - 收藏 Tab 也直接从列表移除
+   */
+  _confirmDelete(roastId) {
+    const isFavTab = this.data.activeTab === 'favorite'
     wx.showModal({
       title: '删除这条记录？',
-      content: '删除后不可恢复，且会自动取消收藏',
+      content: isFavTab
+        ? '删除后不可恢复，且会自动取消收藏'
+        : '删除后不可恢复，且会自动取消收藏',
+      confirmText: '删除',
+      cancelText: '取消',
       confirmColor: '#ff5252',
       success: (res) => {
         if (!res.confirm) return
@@ -142,6 +165,20 @@ Page({
           wx.showToast({ title: err.message || '删除失败', icon: 'none' })
         })
       }
+    })
+  },
+
+  /**
+   * 点击"今日已用 ⓘ"标签：说明这是限流计数，删除历史不会扣减
+   */
+  onTapTodayHint() {
+    wx.showModal({
+      title: '关于「今日已用」',
+      content:
+        '这里显示今天已使用的骂醒次数，每天上限 20 次。\n\n' +
+        '出于防刷需要，删除历史不会减少该计数，明天 0 点自动清零。',
+      showCancel: false,
+      confirmText: '知道了'
     })
   },
 

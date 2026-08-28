@@ -202,7 +202,7 @@ wechat-demo/
 - **业务策略**（`repository.py` 常量）：
   - `HISTORY_RETENTION_DAYS = 90`：历史保留 90 天
   - `HISTORY_MAX_PER_USER = 500`：单用户最多 500 条历史（收藏不受限）
-  - `DAILY_ROAST_LIMIT = 30`：每人每天最多 30 次骂醒
+- `DAILY_ROAST_LIMIT = 20`：每人每天最多 20 次骂醒
 - **定时清理**：`cleanup.py` 用 threading.Timer 每 12h 跑一次 `cleanup_expired`
 - **接口清单**：
   - `POST /api/roast`（改造：加 openid + 限流）

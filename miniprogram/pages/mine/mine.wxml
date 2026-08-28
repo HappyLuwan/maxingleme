@@ -15,7 +15,7 @@
     <view class="stats-divider"></view>
     <view class="stats-item">
       <view class="stats-num">{{stats.todayCount}}</view>
-      <view class="stats-label">今日</view>
+      <view class="stats-label" bindtap="onTapTodayHint">今日已用 ⓘ</view>
     </view>
   </view>
 
@@ -48,6 +48,11 @@
       </view>
       <view class="record-content">{{item._contentPreview}}</view>
       <view class="record-footer">
+        <view class="del-btn"
+              catchtap="onDeleteItem"
+              data-id="{{item.roastId}}">
+          <text>🗑 删除</text>
+        </view>
         <view class="fav-btn {{item.isFavorite ? 'faved' : ''}}"
               catchtap="onToggleFavorite"
               data-id="{{item.roastId}}"

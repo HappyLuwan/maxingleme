@@ -31,7 +31,7 @@
   <view class="template-wrap">
     <view class="input-label">
       <text class="dot"></text>
-      <text>选一个卡片风格（点击即换）</text>
+      <text>{{cardImageUrl ? '换一个卡片风格' : '选一个卡片风格，生成分享图 →'}}</text>
     </view>
     <scroll-view class="template-scroll" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
       <view class="template-list">

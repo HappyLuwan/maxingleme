@@ -18,10 +18,14 @@
   <view class="para">· <text class="tag">卡片行为</text>：卡片"生成/保存/分享"这三类匿名聚合事件（用于优化产品，不含内容详情）。</view>
   <view class="para">· 本小程序<text class="hl">不</text>收集：手机号、位置、通讯录、相册、麦克风、摄像头等敏感权限。</view>
 
+  <view class="para"><text class="hl">3. 设备权限说明：</text></view>
+  <view class="para">· <text class="tag">保存到相册</text>：仅在你主动点击"保存卡片"时调用，将 AI 生成的卡片图片写入你的手机相册，供你离线查看或分享。</view>
+  <view class="para">· <text class="tag">写入剪贴板</text>：仅在你主动点击"关于"页的备案号、心理援助热线号码时调用，用于将上述公开信息复制到你的剪贴板，方便你在其他应用（如浏览器、拨号盘）中粘贴使用。本小程序<text class="hl">不会读取</text>你的剪贴板内容。</view>
+
   <view class="section-title">二、我们如何使用信息</view>
   <view class="para">1. 将你输入的困扰文本发送给第三方 AI 大模型服务商（如 DeepSeek、腾讯混元等）以生成骂醒文案；</view>
   <view class="para">2. 将生成的文案渲染为分享卡片图片供你保存和分享；</view>
-  <view class="para">3. 为你提供历史回顾、收藏管理和每日 30 次的使用配额；</view>
+  <view class="para">3. 为你提供历史回顾、收藏管理和每日 20 次的使用配额；</view>
   <view class="para">4. 用于故障排查、内容安全审计、服务质量优化；</view>
   <view class="para">5. 用于统计使用情况（如日活、风格偏好占比），此类数据均为匿名聚合数据。</view>
 

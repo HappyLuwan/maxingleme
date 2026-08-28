@@ -38,6 +38,10 @@
   color: #888;
 }
 
+.stats-label:active {
+  color: #ff5252;
+}
+
 .stats-divider {
   width: 2rpx;
   height: 60rpx;
@@ -126,6 +130,22 @@
 .record-footer {
   display: flex;
   justify-content: flex-end;
+  gap: 16rpx;
+}
+
+.del-btn {
+  padding: 8rpx 24rpx;
+  border-radius: 40rpx;
+  background: #232323;
+  color: #888;
+  font-size: 24rpx;
+  border: 1rpx solid #2a2a2a;
+}
+
+.del-btn:active {
+  color: #ff5252;
+  background: rgba(255, 82, 82, 0.1);
+  border-color: rgba(255, 82, 82, 0.3);
 }
 
 .fav-btn {
